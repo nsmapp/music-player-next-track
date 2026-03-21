@@ -45,7 +45,7 @@
     <string name="feature_settings_background_color">Колер фону</string>
     <string name="feature_settings_max_tracks">Памер плэйліста</string>
     <string name="feature_settings_playback">Спіс прайгравання</string>
-    <string name="feature_settings_liked_priority">Прыярытэт \"любімых\" трэкаў</string>
+    <string name="feature_settings_liked_priority"> Заўсёды дадаваць любімыя трэкі</string>
     <string name="feature_settings_about_app">Пра дадатак</string>
 
 <!--    feature about-->

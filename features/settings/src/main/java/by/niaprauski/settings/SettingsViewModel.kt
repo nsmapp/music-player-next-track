@@ -94,6 +94,7 @@ class SettingsViewModel @Inject constructor(
                     backgroundPosition = backgroundPosition,
                     isPlayListLimitError = false,
                     playListLimitSize = playListLimitSize.toString(),
+                    isLikeTrackPriority = isLikeTrackPriority
                 )
             }
         }

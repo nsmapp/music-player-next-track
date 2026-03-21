@@ -47,7 +47,7 @@
     <string name="feature_library_pause">Pause</string>
     <string name="feature_settings_max_tracks">Max tracks</string>
     <string name="feature_settings_playback">Playback</string>
-    <string name="feature_settings_liked_priority">Favorite tracks priority</string>
+    <string name="feature_settings_liked_priority">Always include liked tracks</string>
     <string name="feature_settings_about_app">About app</string>
 
     <!--    feature about-->

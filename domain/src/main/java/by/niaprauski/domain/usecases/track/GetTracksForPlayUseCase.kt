@@ -29,12 +29,12 @@ class GetTracksForPlayUseCase @Inject constructor(
                 val trackIds = trackRepository.getTrackIds(playlistConfig)
 
                 val playListIds = when {
-                    limit >= trackIds.all.size -> trackIds.all.shuffled()
-                    isLikeTrackPriority -> trackIds.all.take(limit).shuffled()
+                    limit >= trackIds.all.size -> trackIds.all
+                    isLikeTrackPriority -> trackIds.all.take(limit)
                     else -> trackIds.all.shuffled().take(limit)
                 }
 
-                trackRepository.getByIds(playListIds)
+                trackRepository.getByIds(playListIds).shuffled()
             }
         }
 }

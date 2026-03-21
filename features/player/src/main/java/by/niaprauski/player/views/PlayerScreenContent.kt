@@ -67,7 +67,7 @@ fun PlayersScreenContent(
                 trackId = exoPlayerState.id,
                 artist = exoPlayerState.artist,
                 title = exoPlayerState.title,
-                favorite = exoPlayerState.favorite,
+                favorite = { exoPlayerState.favorite },
                 onAction = onAction,
             )
 

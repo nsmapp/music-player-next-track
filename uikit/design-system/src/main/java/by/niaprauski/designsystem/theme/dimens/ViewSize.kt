@@ -9,6 +9,7 @@ import androidx.compose.ui.unit.dp
 data class ViewSize(
     val micro: Dp,
     val small: Dp,
+    val medium_rc: Dp,
     val normal: Dp,
     val big:Dp,
     val large:Dp,
@@ -27,6 +28,7 @@ data class ViewSize(
 val defaultViewSizes = ViewSize(
     micro = 12.dp,
     small = 24.dp,
+    medium_rc = 32.dp,
     normal = 48.dp,
     big = 64.dp,
     large = 96.dp,

@@ -214,6 +214,9 @@ class PlayerService : MediaSessionService() {
     }
 
     fun play() {
+        if (player?.playbackState == Player.STATE_IDLE) {
+            player?.prepare()
+        }
         player?.play()
     }
 
@@ -222,7 +225,8 @@ class PlayerService : MediaSessionService() {
     }
 
     fun stop() {
-        player?.stop()
+        player?.pause()
+        player?.seekTo(0)
     }
 
     fun seekToNext() {
@@ -234,9 +238,14 @@ class PlayerService : MediaSessionService() {
     }
 
     fun seekTo(progress: Float) {
-        if (player == null) return
+        val player = player ?: return
+
+        if (player.playbackState == Player.STATE_IDLE) {
+            player.prepare()
+        }
+
         val position = (getDuration() * progress).toLong()
-        player?.seekTo(position)
+        player.seekTo(position)
     }
 
     fun getCurrentPosition(): Long {

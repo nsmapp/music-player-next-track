@@ -4,6 +4,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.PlaylistPlay
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.rounded.Cancel
+import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material.icons.rounded.FavoriteBorder
 import androidx.compose.material.icons.rounded.LibraryMusic
 import androidx.compose.material.icons.rounded.Mail
@@ -46,5 +47,6 @@ object IIcon {
     val settings = Icons.Rounded.Settings
     val mail = Icons.Rounded.Mail
     val github = Github
+    val delete = Icons.Rounded.Delete
 
 }

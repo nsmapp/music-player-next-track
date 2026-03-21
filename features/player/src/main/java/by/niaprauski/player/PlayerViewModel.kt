@@ -10,7 +10,7 @@ import androidx.media3.common.MediaItem
 import androidx.media3.common.util.UnstableApi
 import by.niaprauski.domain.usecases.settings.GetSettingsFlowUseCase
 import by.niaprauski.domain.usecases.settings.SetWelcomeMessageStatusUseCase
-import by.niaprauski.domain.usecases.track.ChangeTrackFavoriteUpUseCase
+import by.niaprauski.domain.usecases.track.ChangeTrackFavoriteUseCase
 import by.niaprauski.domain.usecases.track.FilterAndSaveTracksUseCase
 import by.niaprauski.domain.usecases.track.GetTracksForPlayUseCase
 import by.niaprauski.domain.usecases.track.SetTrackFavoriteUpUseCase
@@ -55,7 +55,7 @@ class PlayerViewModel @AssistedInject constructor(
     private val getSettingsFlowUseCase: GetSettingsFlowUseCase,
     private val setWelcomeMessageStatusUseCase: SetWelcomeMessageStatusUseCase,
     private val setTrackFavoriteUpUseCase: SetTrackFavoriteUpUseCase,
-    private val changeTrackFavoriteUpUseCase: ChangeTrackFavoriteUpUseCase,
+    private val changeTrackFavoriteUseCase: ChangeTrackFavoriteUseCase,
     private val trackModelMapper: TrackModelMapper,
 ) : ViewModel() {
 
@@ -285,7 +285,7 @@ class PlayerViewModel @AssistedInject constructor(
         if (playerService.value == null) return
 
         viewModelScope.launch {
-            changeTrackFavoriteUpUseCase.invoke(trackId)
+            changeTrackFavoriteUseCase.invoke(trackId)
             _event.send(PlayerEvent.ChangeFavorite(trackId))
         }
     }
