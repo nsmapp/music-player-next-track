@@ -61,7 +61,7 @@ fun LikeCountView(
     }
 
     val baseIconColor = AppTheme.appColors.accent
-    val favoriteIconColor by remember(favorite) {
+    val favoriteIconColor by remember(favorite, trackId) {
         derivedStateOf { calculateIconColor(favorite, baseIconColor) }
     }
     val favoriteCount by remember(favorite) {

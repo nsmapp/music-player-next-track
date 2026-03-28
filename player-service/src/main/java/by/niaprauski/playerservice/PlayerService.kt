@@ -354,7 +354,7 @@ class PlayerService : MediaSessionService() {
         }
     }
 
-    private fun startProgressTracking() { //TODO check frizzing progress after change track
+    private fun startProgressTracking() {
         if (progressTrackingJob?.isActive == true) return
 
         progressTrackingJob?.cancel()
@@ -403,6 +403,11 @@ class PlayerService : MediaSessionService() {
             }
         }
 
+        override fun onEvents(player: Player, events: Player.Events) {
+            super.onEvents(player, events)
+            //TODO handle events shuffle repeat etc
+        }
+
         override fun onMediaMetadataChanged(mediaMetadata: MediaMetadata) {
             updateTrackInfo(mediaMetadata)
         }
@@ -446,25 +451,16 @@ class PlayerService : MediaSessionService() {
             }
         }
     }
-
+//TODO need add title and artist to metadata GLOBALY(flip after change track)
     private fun updateTrackInfo(mediaMetadata: MediaMetadata) {
         with(mediaMetadata) {
-            val trackArtist = artist.ifNullOrEmpty {
-                player?.currentMediaItem?.mediaMetadata?.extras?.getString(
-                    TRACK_KEY_FILE_NAME,
-                    TEXT_EMPTY
-                )
-            }
-            val trackTitle = title.ifNullOrEmpty {
-                player?.currentMediaItem?.mediaMetadata?.extras?.getString(
-                    TRACK_KEY_FILE_NAME,
-                    TEXT_EMPTY
-                )
-            }
 
+            val fileName = extras?.getString(TRACK_KEY_FILE_NAME, TEXT_EMPTY) ?: TEXT_EMPTY
+
+            val trackArtist = artist.ifNullOrEmpty { fileName }
+            val trackTitle = title.ifNullOrEmpty { fileName }
             val trackId = extras?.getString(TRACK_KEY_ID, UNKNOWN_TRACK_ID) ?: UNKNOWN_TRACK_ID
             val favorite = extras?.getInt(TRACK_KEY_FAVORITE, -1) ?: -1
-            val fileName = extras?.getString(TRACK_KEY_FILE_NAME, TEXT_EMPTY) ?: TEXT_EMPTY
 
 
             _state.update {

@@ -2,9 +2,9 @@
 <resources>
     <string name="app_name">Next track</string>
     <string name="app_version"> v0.9</string>
-<!--    //TODO move version to properties-->
+    <!--    //TODO move version to properties-->
 
-<!--    feature player-->
+    <!--    feature player-->
     <string name="feature_player_welcome_message">To sync the playlist, you need to grant access to your media files.\n\nIf you do not want to grant the app access to your media files, you can play your track by selecting it in the file manager.</string>
     <string name="feature_player_close">Close</string>
     <string name="feature_player_library">Library</string>
@@ -28,13 +28,13 @@
     <string name="feature_player_get">Get</string>
 
 
-<!--    feature library-->
+    <!--    feature library-->
     <string name="feature_library_search">Search</string>
     <string name="feature_library_ignore">Ignore</string>
     <string name="feature_library_play">Play</string>
     <string name="feature_library_restore_track">Restore track</string>
 
-<!--    feature settings-->
+    <!--    feature settings-->
 
     <string name="feature_settings_interface">Interface</string>
     <string name="feature_settings_sync_settings">Sync settings</string>
@@ -52,4 +52,15 @@
 
     <!--    feature about-->
     <string name="feature_about_application_description">A simple music and online radio player — just hit “Play”.\n\nIf you have any suggestions or found a bug, feel free to reach out.</string>
+
+    <!--    feature player service-->
+    <string name="feature_play_service_next_track_channel" translatable="false">Next Track Channel</string>
+    <string name="feature_play_service_next_track_music_chanel" translatable="false">Next track music chanel</string>
+    <string name="feature_player_service_next_track">Next track</string>
+    <string name="feature_player_service_next_artist">Next artist</string>
+    <string name="feature_play_service_track_back">Back</string>
+    <string name="feature_play_service_pause">Pause</string>
+    <string name="feature_play_service_play">Play</string>
+    <string name="feature_play_service_next">Next</string>
+
 </resources>

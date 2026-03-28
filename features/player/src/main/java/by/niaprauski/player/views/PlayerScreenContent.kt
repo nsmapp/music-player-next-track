@@ -18,6 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.media3.common.util.UnstableApi
+import by.niaprauski.designsystem.extensions.onSwipe
 import by.niaprauski.designsystem.theme.AppTheme
 import by.niaprauski.player.models.PAction
 import by.niaprauski.playerservice.models.ExoPlayerState
@@ -41,6 +42,10 @@ fun PlayersScreenContent(
             .fillMaxSize()
             .background(color = AppTheme.appColors.background)
             .statusBarsPadding()
+            .onSwipe(
+                onUp = { onAction(PAction.PlayNext) },
+                onDown = { onAction(PAction.PlayPrevious) }
+            )
             .pointerInput(exoPlayerState.id) {
                 detectTapGestures(onDoubleTap = {
                     onAction(PAction.UpTrackFavorite(exoPlayerState.id))

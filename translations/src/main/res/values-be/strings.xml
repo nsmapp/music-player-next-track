@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Next track</string>
-    <string name="app_version">0.9</string>
+    <string name="app_version">v0.9</string>
 
-<!--    feature player-->
+    <!--    feature player-->
     <string name="feature_player_welcome_message">Каб сінхранізаваць спіс прайгравання, вам трэба даць доступ да вашых медыяфайлаў.\n\nКалі вы не хочаце даваць праграме доступ да вашых медыяфайлаў, вы можаце прайграць трэк, выбраўшы яго ў файлавым мэнэджары.</string>
     <string name="feature_player_close">Адхіліць</string>
     <string name="feature_player_library">Спіс трэкаў</string>
@@ -27,14 +27,14 @@
     <string name="feature_player_get">Атрымаць</string>
 
 
-<!--    feature library-->
+    <!--    feature library-->
     <string name="feature_library_search">Пошук</string>
     <string name="feature_library_ignore">Ігнараваць</string>
     <string name="feature_library_play">Прайграць</string>
     <string name="feature_library_restore_track">Аднавіць трэк</string>
     <string name="feature_library_pause">Прыпыніць</string>
 
-<!--    feature settings-->
+    <!--    feature settings-->
     <string name="feature_settings_interface">Інтэрфейс</string>
     <string name="feature_settings_sync_settings">Налады сінхранізацыі</string>
     <string name="feature_settings_min_duration_sec">Мінімальная працягласць, сек</string>
@@ -48,6 +48,15 @@
     <string name="feature_settings_liked_priority"> Заўсёды дадаваць любімыя трэкі</string>
     <string name="feature_settings_about_app">Пра дадатак</string>
 
-<!--    feature about-->
+    <!--    feature about-->
     <string name="feature_about_application_description">Просты дадатак для праслухоўвання музыкі і онлайн-радыё — проста націсніце «Play».\n\nКалі ў вас ёсць ідэі па паляпшэнні або вы знайшлі памылку, калі ласка, звяжыцеся са мной.</string>
+
+
+    <!--    feature player service-->
+    <string name="feature_player_service_next_track">Наступны трэк</string>
+    <string name="feature_player_service_next_artist">Наступны выканаўца</string>
+    <string name="feature_play_service_track_back">Папярэдні</string>
+    <string name="feature_play_service_pause">Прыпыніць</string>
+    <string name="feature_play_service_play">Прайграць</string>
+    <string name="feature_play_service_next">Наступны</string>
 </resources>

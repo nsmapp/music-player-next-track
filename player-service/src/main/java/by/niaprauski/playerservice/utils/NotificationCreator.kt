@@ -1,6 +1,5 @@
 package by.niaprauski.playerservice.utils
 
-import android.R
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -11,17 +10,25 @@ import android.content.Intent
 import android.view.KeyEvent
 import androidx.annotation.OptIn
 import androidx.core.app.NotificationCompat
+import androidx.media3.common.MediaMetadata
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.session.MediaButtonReceiver
 import androidx.media3.session.MediaSession
 import androidx.media3.session.MediaStyleNotificationHelper
+import by.niaprauski.translations.R
 import by.niaprauski.utils.extension.getFileName
 import by.niaprauski.utils.intents.OpenAppIntent
 
+//TODO? migrate to MediaNotification.Provider
 class NotificationCreator {
 
-    private val chanelId = "by.niaprauski.nexttreck.chanel"
+    companion object {
+        const val channelId = "by.niaprauski.nexttrack.chanel"
+        private const val REQUEST_CODE_PLAY_PAUSE = 0
+        private const val REQUEST_CODE_NEXT = 1
+        private const val REQUEST_CODE_PREV = 2
+    }
 
     @OptIn(UnstableApi::class)
     fun buildNotification(
@@ -33,55 +40,93 @@ class NotificationCreator {
 
         val mediaMetadata = player?.currentMediaItem?.mediaMetadata
 
-        val playPendingIntent: PendingIntent = createPendingIntent(
+        val builder = NotificationCompat.Builder(context, channelId)
+            .setSmallIcon(android.R.drawable.ic_media_play)
+            .setPriority(NotificationCompat.PRIORITY_LOW)
+            .setOngoing(true)
+            .setShowWhen(false)
+            .setContentIntent(createOpenActivityIntent(context))
+
+        setTrackInformation(context, mediaMetadata, builder)
+        setStyle(mediaSession, builder)
+        setActions(context, player, builder)
+
+        return builder.build()
+    }
+
+    @OptIn(UnstableApi::class)
+    private fun setStyle(
+        mediaSession: MediaSession?,
+        builder: NotificationCompat.Builder
+    ) {
+        mediaSession?.let { session ->
+            val style = MediaStyleNotificationHelper.MediaStyle(session)
+                .setShowActionsInCompactView(0, 1, 2)
+            builder.setStyle(style)
+        }
+    }
+
+    private fun setActions(
+        context: Context,
+        player: ExoPlayer?,
+        builder: NotificationCompat.Builder
+    ) {
+        val playPausePendingIntent: PendingIntent = createPendingIntent(
             context = context,
             code = KeyEvent.KEYCODE_MEDIA_PLAY,
-            requestCode = 0
-        )
-
-        val pausePendingIntent: PendingIntent = createPendingIntent(
-            context = context,
-            code = KeyEvent.KEYCODE_MEDIA_PAUSE,
-            requestCode = 1
+            requestCode = REQUEST_CODE_PLAY_PAUSE
         )
 
         val nextPendingIntent: PendingIntent = createPendingIntent(
             context = context,
             code = KeyEvent.KEYCODE_MEDIA_NEXT,
-            requestCode = 2
+            requestCode = REQUEST_CODE_NEXT
         )
 
         val prevPendingIntent: PendingIntent = createPendingIntent(
             context = context,
             code = KeyEvent.KEYCODE_MEDIA_PREVIOUS,
-            requestCode = 3
+            requestCode = REQUEST_CODE_PREV
         )
 
-        val builder =
-            NotificationCompat.Builder(context, chanelId).setSmallIcon(R.drawable.ic_media_play)
-                .setContentTitle(mediaMetadata?.title ?: mediaMetadata?.getFileName("Next track")) //TODO move to string resources
-                .setContentText(mediaMetadata?.artist ?: mediaMetadata?.getFileName("Next artist"))//TODO move to string resources
+        val trackBackText =
+            context.getString(R.string.feature_play_service_track_back)
+        val pauseText =
+            context.getString(R.string.feature_play_service_pause)
+        val playText =
+            context.getString(R.string.feature_play_service_play)
+        val nextText =
+            context.getString(R.string.feature_play_service_next)
 
-        mediaSession?.let { builder.setStyle(MediaStyleNotificationHelper.MediaStyle(it)) }
-        player?.let {
-            builder.setPriority(NotificationCompat.PRIORITY_LOW).setOngoing(it.isPlaying)
-        }
+        val playPauseIconId =
+            if (player?.isPlaying == true) android.R.drawable.ic_media_pause else android.R.drawable.ic_media_play
+        val playPauseText = if (player?.isPlaying == true) pauseText else playText
+        val playPauseIntent = playPausePendingIntent
 
-        builder.setShowWhen(false)
-            .addAction(R.drawable.ic_media_previous, "Track back", prevPendingIntent).addAction(
-                if (player?.isPlaying == true) R.drawable.ic_media_pause
-                else R.drawable.ic_media_play,
-                if (player?.isPlaying == true) "Pause" else "Play",
-                if (player?.isPlaying == true) pausePendingIntent else playPendingIntent
-            ).addAction(R.drawable.ic_media_next, "Next", nextPendingIntent)
+        builder
+            .addAction(android.R.drawable.ic_media_previous, trackBackText, prevPendingIntent)
+            .addAction(playPauseIconId, playPauseText, playPauseIntent)
+            .addAction(android.R.drawable.ic_media_next, nextText, nextPendingIntent)
+    }
 
-        builder.setContentIntent(createOpenActivityIntent(context))
-        
-        return builder.build()
+    private fun setTrackInformation(
+        context: Context,
+        mediaMetadata: MediaMetadata?,
+        builder: NotificationCompat.Builder
+    ) {
+        val trackDefaultTitle =
+            context.getString(R.string.feature_player_service_next_track)
+        val trackDefaultArtist =
+            context.getString(R.string.feature_player_service_next_artist)
+        val trackTitle = mediaMetadata?.title ?: mediaMetadata?.getFileName(trackDefaultTitle)
+        val trackArtist = mediaMetadata?.artist ?: mediaMetadata?.getFileName(trackDefaultArtist)
+        builder.setContentTitle(trackTitle)
+            .setContentText(trackArtist)
     }
 
     private fun createOpenActivityIntent(context: Context): PendingIntent {
-        val openActivityIntent = Intent(OpenAppIntent.OPEN_APP_ACTION
+        val openActivityIntent = Intent(
+            OpenAppIntent.OPEN_APP_ACTION
         ).apply {
             `package` = context.packageName
             flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP
@@ -119,18 +164,20 @@ class NotificationCreator {
         return playPendingIntent
     }
 
-    //TODO move to string resources
     private fun createNotificationChannel(context: Context) {
-        val name = "Next Track Channel"
-        val descriptionText = "Next track music chanel"
-        val importance = NotificationManager.IMPORTANCE_LOW
-        val channel = NotificationChannel(chanelId, name, importance)
-        channel.description = descriptionText
-
         val notificationManager: NotificationManager =
             context.getSystemService(NOTIFICATION_SERVICE) as NotificationManager
-        notificationManager.createNotificationChannel(channel)
-    }
 
+        if (notificationManager.getNotificationChannel(channelId) == null) {
+            val name = context.getString(R.string.feature_play_service_next_track_channel)
+            val descriptionText =
+                context.getString(R.string.feature_play_service_next_track_music_chanel)
+            val channel =
+                NotificationChannel(channelId, name, NotificationManager.IMPORTANCE_LOW)
+                    .apply { description = descriptionText }
+
+            notificationManager.createNotificationChannel(channel)
+        }
+    }
 
 }
