@@ -80,7 +80,7 @@ fun TrackItem(
 
         PlayerLiteButton(
             modifier = Modifier.size(AppTheme.viewSize.small),
-            imageVector = IIcon.delete,
+            imageVector = IIcon.remove,
             onClick = handleRemoveClick,
             description = "Выдаліць трэк з плэйліста",
         )

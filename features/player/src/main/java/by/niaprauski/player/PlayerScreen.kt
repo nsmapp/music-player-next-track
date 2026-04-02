@@ -31,7 +31,9 @@ import by.niaprauski.player.views.dialogs.FirstLaunchDialog
 import by.niaprauski.player.views.dialogs.NeedMediaPermissionDialog
 import by.niaprauski.utils.media.ITrackShort
 import by.niaprauski.utils.media.MediaHandler
+import by.niaprauski.utils.messages.showToast
 import by.niaprauski.utils.permission.MediaPermissions
+import by.niaprauski.translations.R
 
 @OptIn(UnstableApi::class)
 @Composable
@@ -59,8 +61,7 @@ fun PlayerScreen(
 
     val mediaPermissionLauncher = MediaPermissions.rememberMediaPermissionsLauncher(
         onGranted = { syncPlaylist(context) { status -> viewModel.onAction(PAction.SyncTracks(status)) } },
-        onDisablePermissions = { viewModel.onAction(PAction.ShowPermissionInformationDialog) }
-    )
+        onDisablePermissions = { viewModel.onAction(PAction.ShowPermissionInformationDialog) })
 
     LaunchedEffect(Unit) {
         viewModel.event.collect { event ->
@@ -82,17 +83,20 @@ fun PlayerScreen(
                     hasMediaPermission = hasMediaPermission,
                     mediaPermissionLauncher = mediaPermissionLauncher,
                     context = context,
-                    onSyncTrack = { syncStatus -> viewModel.onAction(PAction.SyncTracks(syncStatus)) }
-                )
+                    onSyncTrack = { syncStatus -> viewModel.onAction(PAction.SyncTracks(syncStatus)) })
 
                 is PlayerEvent.UpFavorite -> playerService?.upTrackFavorite(event.trackId)
                 is PlayerEvent.ChangeFavorite -> playerService?.changeTrackFavorite(event.trackId)
-                is PlayerEvent.RemoveTrackFromPlayList ->
-                    playerService?.removeTrackFromPlayList(event.trackId)
+                is PlayerEvent.RemoveTrackFromPlayList -> playerService?.removeTrackFromPlayList(
+                    event.trackId
+                )
 
-                is PlayerEvent.PlayTrackFromPlayList ->
-                    playerService?.playTrackFromPlayList(event.trackId)
+                is PlayerEvent.PlayTrackFromPlayList -> playerService?.playTrackFromPlayList(event.trackId)
 
+                PlayerEvent.MediaItemSynced ->
+                    context.showToast(context.getString(R.string.feature_player_sync_complete))
+                PlayerEvent.MediaItemSyncError ->
+                    context.showToast(context.getString(R.string.feature_player_synchronization_failed))
                 PlayerEvent.Nothing -> {
                     /**do nothing **/
                 }
@@ -106,9 +110,12 @@ fun PlayerScreen(
     )
 
     if (state.isShowPermissionInformationDialog) NeedMediaPermissionDialog(
-        onOpenSettingsClick = { openAppSettings(context) },
-        onDismissClick = { viewModel.onAction(PAction.HideMediaPermissionInfoDialog) }
-    )
+        onOpenSettingsClick = {
+            openAppSettings(
+                context
+            )
+        },
+        onDismissClick = { viewModel.onAction(PAction.HideMediaPermissionInfoDialog) })
 
     PlayersScreenContent(
         exoPlayerState = exoPlayerState,

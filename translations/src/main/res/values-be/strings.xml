@@ -25,6 +25,8 @@
     <string name="feature_player_reload_playlist">Змяніць плэйліст</string>
     <string name="feature_player_not_music_access">Адсутнічае доступ да музыкі</string>
     <string name="feature_player_get">Атрымаць</string>
+    <string name="feature_player_sync_complete">Сінхранізацыя завершана</string>
+    <string name="feature_player_synchronization_failed">Памылка сінхраніхацыі</string>
 
 
     <!--    feature library-->

@@ -4,6 +4,8 @@ import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.ContentTransform
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.animation.togetherWith
@@ -19,6 +21,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -56,8 +59,10 @@ fun ContentView(
 
 
         AnimatedContent(
+            modifier = Modifier.fillMaxWidth(),
             targetState = isControlViewVisible,
             transitionSpec = { controlViewTransform() },
+            contentAlignment = Alignment.BottomCenter,
             content = { isVisible ->
 
                 if (isVisible) {
@@ -97,11 +102,12 @@ private fun controlViewTransform(): ContentTransform {
     val enter = slideInVertically(
         initialOffsetY = { it },
         animationSpec = spring(stiffness = Spring.StiffnessLow)
-    )
+    ) + fadeIn()
+
     val exit = slideOutVertically(
         targetOffsetY = { it },
         animationSpec = spring(stiffness = Spring.StiffnessLow)
-    )
+    ) + fadeOut()
 
     return enter togetherWith exit
 }

@@ -27,5 +27,8 @@ sealed class PlayerEvent {
 
     data class PlayTrackFromPlayList(val trackId: String): PlayerEvent()
 
+    object MediaItemSynced: PlayerEvent()
+    object MediaItemSyncError: PlayerEvent()
+
     object Nothing: PlayerEvent()
 }

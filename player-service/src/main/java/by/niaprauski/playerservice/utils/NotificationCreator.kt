@@ -17,6 +17,7 @@ import androidx.media3.session.MediaButtonReceiver
 import androidx.media3.session.MediaSession
 import androidx.media3.session.MediaStyleNotificationHelper
 import by.niaprauski.translations.R
+import by.niaprauski.utils.extension.fixOldEncoding
 import by.niaprauski.utils.extension.getFileName
 import by.niaprauski.utils.intents.OpenAppIntent
 
@@ -118,8 +119,10 @@ class NotificationCreator {
             context.getString(R.string.feature_player_service_next_track)
         val trackDefaultArtist =
             context.getString(R.string.feature_player_service_next_artist)
-        val trackTitle = mediaMetadata?.title ?: mediaMetadata?.getFileName(trackDefaultTitle)
-        val trackArtist = mediaMetadata?.artist ?: mediaMetadata?.getFileName(trackDefaultArtist)
+        val trackTitle =
+            mediaMetadata?.title.fixOldEncoding() ?: mediaMetadata?.getFileName(trackDefaultTitle)
+        val trackArtist =
+            mediaMetadata?.artist.fixOldEncoding() ?: mediaMetadata?.getFileName(trackDefaultArtist)
         builder.setContentTitle(trackTitle)
             .setContentText(trackArtist)
     }

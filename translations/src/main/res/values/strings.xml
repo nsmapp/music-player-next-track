@@ -26,6 +26,8 @@
     <string name="feature_player_reload_playlist">reload playlist</string>
     <string name="feature_player_not_music_access">No access to music</string>
     <string name="feature_player_get">Get</string>
+    <string name="feature_player_sync_complete">Sync complete</string>
+    <string name="feature_player_synchronization_failed">Synchronization failed</string>
 
 
     <!--    feature library-->

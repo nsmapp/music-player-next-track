@@ -32,6 +32,7 @@ import by.niaprauski.translations.R
 import by.niaprauski.utils.constants.EMPTY_FLOW_ARRAY
 import by.niaprauski.utils.constants.TEXT_EMPTY
 import by.niaprauski.utils.extension.UNKNOWN_TRACK_ID
+import by.niaprauski.utils.extension.fixOldEncoding
 import by.niaprauski.utils.extension.getFileName
 import by.niaprauski.utils.extension.ifNullOrEmpty
 import by.niaprauski.utils.extension.orDefault
@@ -195,7 +196,6 @@ class PlayerService : MediaSessionService() {
 
     fun setTrack(track: MediaItem) {
         stopWithClearMediaItems()
-        updateTrackInfo(track.mediaMetadata)
         playSingleMediaItem(track)
     }
 
@@ -268,22 +268,18 @@ class PlayerService : MediaSessionService() {
     }
 
     fun changeShuffleMode() {
-        val shuffleMode = player?.shuffleModeEnabled?.not() ?: return
-        player?.shuffleModeEnabled = shuffleMode
-        _state.update { it.copy(shuffle = shuffleMode) }
+        player?.let { it.shuffleModeEnabled = !it.shuffleModeEnabled }
     }
 
     fun changeRepeatMode() {
-        val newRepeatMode = when (player?.repeatMode) {
-            Player.REPEAT_MODE_OFF -> Player.REPEAT_MODE_ONE
-            Player.REPEAT_MODE_ONE -> Player.REPEAT_MODE_ALL
-            Player.REPEAT_MODE_ALL -> Player.REPEAT_MODE_OFF
-            else -> Player.REPEAT_MODE_OFF
-        }
-
-        player?.let { player ->
-            player.repeatMode = newRepeatMode
-            _state.update { it.copy(repeatMode = newRepeatMode) }
+        player?.let {
+            val newRepeatMode = when (it.repeatMode) {
+                Player.REPEAT_MODE_OFF -> Player.REPEAT_MODE_ONE
+                Player.REPEAT_MODE_ONE -> Player.REPEAT_MODE_ALL
+                Player.REPEAT_MODE_ALL -> Player.REPEAT_MODE_OFF
+                else -> Player.REPEAT_MODE_OFF
+            }
+            it.repeatMode = newRepeatMode
         }
     }
 
@@ -405,12 +401,13 @@ class PlayerService : MediaSessionService() {
 
         override fun onEvents(player: Player, events: Player.Events) {
             super.onEvents(player, events)
-            //TODO handle events shuffle repeat etc
+            
+            handlePlayerControlEvents(events, player)
+            handleIsPlayingChanged(events, player)
+            handleMetadataChanged(events, player)
+            handleMediaItemTransaction(events)
         }
 
-        override fun onMediaMetadataChanged(mediaMetadata: MediaMetadata) {
-            updateTrackInfo(mediaMetadata)
-        }
 
         override fun onPlaybackStateChanged(playbackState: Int) {
             when (playbackState) {
@@ -419,16 +416,6 @@ class PlayerService : MediaSessionService() {
                 Player.STATE_READY -> println("!!! player state: STATE_READY")
                 Player.STATE_ENDED -> println("!!! player state: STATE_ENDED")
             }
-        }
-
-        override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
-            updateNotification()
-        }
-
-        override fun onIsPlayingChanged(isPlaying: Boolean) {
-            _state.update { it.copy(isPlaying = isPlaying) }
-            updateNotification()
-            if (isPlaying) startProgressTracking() else stopProgressTracking()
         }
 
         override fun onTimelineChanged(timeline: Timeline, reason: Int) {
@@ -451,14 +438,59 @@ class PlayerService : MediaSessionService() {
             }
         }
     }
-//TODO need add title and artist to metadata GLOBALY(flip after change track)
+
+    private fun handleMediaItemTransaction(events: Player.Events) {
+        if (events.contains(Player.EVENT_MEDIA_ITEM_TRANSITION)) {
+            updateNotification()
+        }
+    }
+
+    private fun handleMetadataChanged(
+        events: Player.Events,
+        player: Player
+    ) {
+        if (events.contains(Player.EVENT_MEDIA_METADATA_CHANGED)) {
+            updateTrackInfo(player.mediaMetadata)
+        }
+    }
+
+    private fun handleIsPlayingChanged(
+        events: Player.Events,
+        player: Player
+    ) {
+        if (events.contains(Player.EVENT_IS_PLAYING_CHANGED)) {
+            if (player.isPlaying) startProgressTracking() else stopProgressTracking()
+        }
+    }
+
+    private fun handlePlayerControlEvents(
+        events: Player.Events,
+        player: Player
+    ) {
+        if (
+            events.containsAny(
+                Player.EVENT_IS_PLAYING_CHANGED,
+                Player.EVENT_SHUFFLE_MODE_ENABLED_CHANGED,
+                Player.EVENT_REPEAT_MODE_CHANGED,
+                Player.EVENT_PLAYBACK_STATE_CHANGED
+            )
+        ) _state.update {
+            it.copy(
+                isPlaying = player.isPlaying,
+                shuffle = player.shuffleModeEnabled,
+                repeatMode = player.repeatMode
+            )
+        }
+    }
+
+    //TODO need add title and artist to metadata GLOBALY(flip after change track)
     private fun updateTrackInfo(mediaMetadata: MediaMetadata) {
         with(mediaMetadata) {
 
             val fileName = extras?.getString(TRACK_KEY_FILE_NAME, TEXT_EMPTY) ?: TEXT_EMPTY
 
-            val trackArtist = artist.ifNullOrEmpty { fileName }
-            val trackTitle = title.ifNullOrEmpty { fileName }
+            val trackArtist = artist.fixOldEncoding().ifNullOrEmpty { fileName }
+            val trackTitle = title.fixOldEncoding().ifNullOrEmpty { fileName }
             val trackId = extras?.getString(TRACK_KEY_ID, UNKNOWN_TRACK_ID) ?: UNKNOWN_TRACK_ID
             val favorite = extras?.getInt(TRACK_KEY_FAVORITE, -1) ?: -1
 

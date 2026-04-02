@@ -157,9 +157,13 @@ class PlayerViewModel @AssistedInject constructor(
 
         val saveJob = launch {
             val syncTracks = trackModelMapper.toDomainModels(syncTracks.tracks)
-            filterAndSaveTracksUseCase.invoke(syncTracks).onSuccess { handleSyncedTracks() }
+            filterAndSaveTracksUseCase.invoke(syncTracks)
+                .onSuccess {
+                    handleSyncedTracks()
+                    _event.send(PlayerEvent.MediaItemSynced)
+                }
                 .onFailure {
-                    //TODO add sync failure message
+                    _event.send(PlayerEvent.MediaItemSyncError)
                 }
         }
 
