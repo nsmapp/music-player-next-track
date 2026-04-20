@@ -10,11 +10,13 @@ import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.border
+import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
@@ -50,16 +52,20 @@ fun ContentView(
         derivedStateOf { currentTrackId() != UNKNOWN_TRACK_ID }
     }
 
-    Column(modifier = Modifier.fillMaxSize()) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .imePadding()
+    ) {
+
         TrackListView(
             pagingTracks = pagingTracks,
             onAction = onAction,
             currentTrackId = currentTrackId
         )
 
-
         AnimatedContent(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth().focusable(),
             targetState = isControlViewVisible,
             transitionSpec = { controlViewTransform() },
             contentAlignment = Alignment.BottomCenter,

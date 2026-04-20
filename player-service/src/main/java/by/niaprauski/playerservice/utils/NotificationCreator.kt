@@ -7,6 +7,7 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Context.NOTIFICATION_SERVICE
 import android.content.Intent
+import android.os.Build
 import android.view.KeyEvent
 import androidx.annotation.OptIn
 import androidx.core.app.NotificationCompat
@@ -168,6 +169,8 @@ class NotificationCreator {
     }
 
     private fun createNotificationChannel(context: Context) {
+
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) return
         val notificationManager: NotificationManager =
             context.getSystemService(NOTIFICATION_SERVICE) as NotificationManager
 

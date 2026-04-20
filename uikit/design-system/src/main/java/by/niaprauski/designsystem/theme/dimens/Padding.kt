@@ -27,3 +27,15 @@ val defaultPaddings = Padding(
     large = 32.dp,
     extraLarge = 64.dp,
 )
+
+
+val smallPaddings = Padding(
+    zero = 0.dp,
+    micro = 1.dp,
+    mini = 2.dp,
+    default = 4.dp,
+    normal = 8.dp,
+    medium = 12.dp,
+    large = 16.dp,
+    extraLarge = 32.dp,
+)

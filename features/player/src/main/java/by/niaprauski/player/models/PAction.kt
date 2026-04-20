@@ -1,7 +1,5 @@
 package by.niaprauski.player.models
 
-import android.net.Uri
-
 sealed class PAction {
     object Play: PAction()
     object Pause: PAction()

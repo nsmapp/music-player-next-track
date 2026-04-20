@@ -48,7 +48,7 @@ fun Root(
     val navigator = remember { Navigator(backStack) }
     val isKeyboardVisible = WindowInsets.ime.asPaddingValues().calculateBottomPadding() > 0.dp
 
-    val entries = getEntries(navigator)
+    val entries = remember(navigator){ getEntries(navigator)}
 
     Scaffold(
         containerColor = AppTheme.appColors.background,

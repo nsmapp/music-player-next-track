@@ -29,11 +29,11 @@ import by.niaprauski.player.views.PlayersScreenContent
 import by.niaprauski.player.views.TrackItem
 import by.niaprauski.player.views.dialogs.FirstLaunchDialog
 import by.niaprauski.player.views.dialogs.NeedMediaPermissionDialog
+import by.niaprauski.translations.R
 import by.niaprauski.utils.media.ITrackShort
 import by.niaprauski.utils.media.MediaHandler
 import by.niaprauski.utils.messages.showToast
 import by.niaprauski.utils.permission.MediaPermissions
-import by.niaprauski.translations.R
 
 @OptIn(UnstableApi::class)
 @Composable

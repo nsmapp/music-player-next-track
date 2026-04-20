@@ -17,8 +17,8 @@ import by.niaprauski.designsystem.theme.AppTheme
 import by.niaprauski.designsystem.theme.dimens.defaultRoundedShape
 import by.niaprauski.designsystem.ui.text.TextBoldLarge
 import by.niaprauski.designsystem.ui.text.TextMedium
-import by.niaprauski.translations.R
 import by.niaprauski.player.models.PAction
+import by.niaprauski.translations.R
 
 @Composable
 fun PermissionWarningInfoView(

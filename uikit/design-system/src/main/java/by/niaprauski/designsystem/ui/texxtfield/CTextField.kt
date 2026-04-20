@@ -4,7 +4,6 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.text.selection.TextSelectionColors
@@ -17,9 +16,9 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.TextStyle
-import by.niaprauski.designsystem.ui.icons.SmallIcon
 import by.niaprauski.designsystem.theme.AppTheme
 import by.niaprauski.designsystem.theme.dimens.defaultRoundedShape
+import by.niaprauski.designsystem.ui.icons.SmallIcon
 import by.niaprauski.designsystem.ui.text.TextMedium
 
 @Composable

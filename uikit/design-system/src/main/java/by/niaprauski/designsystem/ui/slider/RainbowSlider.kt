@@ -1,11 +1,13 @@
 package by.niaprauski.designsystem.ui.slider
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Slider
@@ -68,15 +70,20 @@ fun RainbowSlider(
         valueRange = valueRange,
         steps = steps,
         thumb = {
-            Spacer(
+            Column(
                 modifier = Modifier
-                    .padding(vertical = AppTheme.padding.mini)
-                    .size(AppTheme.viewSize.micro)
-                    .clip(RoundedCornerShape(AppTheme.viewSize.micro))
-                    .background(AppTheme.appColors.text)
-                    .padding(vertical = AppTheme.viewSize.border_small)
-                    .background(AppTheme.appColors.accent)
-            )
+                    .height(AppTheme.viewSize.small)
+                    .wrapContentWidth(),
+                verticalArrangement = Arrangement.Center
+            ) {
+                Spacer(
+                    modifier = Modifier
+                        .size(AppTheme.viewSize.micro)
+                        .clip(RoundedCornerShape(AppTheme.viewSize.micro))
+                        .background(AppTheme.appColors.text)
+                        .background(AppTheme.appColors.accent)
+                )
+            }
         },
         track = {
             Spacer(
@@ -114,5 +121,5 @@ val rainbowColors = listOf(
     Color(0xFFC5C552),
     Color(0xFF75b18b),
     Color(0xFF22729F),
-    Color(0xFF8F29A2),
+    Color(0xFF4A148C),
 )

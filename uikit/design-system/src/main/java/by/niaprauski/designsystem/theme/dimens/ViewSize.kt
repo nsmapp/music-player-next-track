@@ -42,3 +42,21 @@ val defaultViewSizes = ViewSize(
     view_extra_larger = 192.dp,
     short_text_field = 64.dp,
 )
+
+val smallViewSizes = ViewSize(
+    micro = 8.dp,
+    small = 16.dp,
+    medium_rc = 24.dp,
+    normal = 36.dp,
+    big = 58.dp,
+    large = 80.dp,
+    extra_large = 140.dp,
+
+    border_zero = 0.dp,
+    border_small = 0.5.dp,
+    border_normal = 1.dp,
+    border_big = 2.dp,
+
+    view_extra_larger = 162.dp,
+    short_text_field = 48.dp,
+)

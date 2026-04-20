@@ -20,3 +20,11 @@ val defaultRadius = Radius(
     default = 8.dp,
     medium = 16.dp,
 )
+
+val smallRadius = Radius(
+    zero = 0.dp,
+    micro = 2.dp,
+    mini = 4.dp,
+    default = 6.dp,
+    medium = 8.dp,
+)
