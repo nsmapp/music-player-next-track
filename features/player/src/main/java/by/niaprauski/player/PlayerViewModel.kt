@@ -319,7 +319,13 @@ class PlayerViewModel @AssistedInject constructor(
     }
 
     private fun reloadPlayList() {
-        loadTracks()
+        viewModelScope.launch {
+            getTracksForPlayUseCase.invoke()
+                .onSuccess { items ->
+                    setPlayList(trackModelMapper.toMediaItems(items))
+                    _event.send(PlayerEvent.PlaylistChanged)
+                }
+        }
     }
 
     private fun getSettings() {

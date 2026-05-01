@@ -85,6 +85,8 @@ class PlayerService : MediaSessionService() {
 
     private val soundProcessor = SoundProcessor(serviceScope, _waveform)
 
+    private val notificationCreator = NotificationCreator()
+
 
     inner class PlayerBinder : Binder() {
         fun getService(): PlayerService = this@PlayerService
@@ -154,7 +156,7 @@ class PlayerService : MediaSessionService() {
 
         }
 
-        val notification = NotificationCreator().buildNotification(
+        val notification = notificationCreator.buildNotification(
             context = this,
             player = player,
             mediaSession = mediaSession,

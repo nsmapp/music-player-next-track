@@ -11,7 +11,6 @@ import androidx.compose.ui.text.input.KeyboardType
 import by.niaprauski.designsystem.theme.AppTheme
 import by.niaprauski.designsystem.ui.row.SwitchRow
 import by.niaprauski.designsystem.ui.row.TextFieldRow
-import by.niaprauski.designsystem.ui.text.TextBoldLarge
 import by.niaprauski.translations.R
 
 @Composable
@@ -22,10 +21,6 @@ fun PlayListSettingsView(
     onLimitTrackChanged: (String) -> Unit,
     onAddLikeTrackInPlayList: (Boolean) -> Unit,
 ) {
-    TextBoldLarge(
-        modifier = Modifier.padding(top = AppTheme.padding.default),
-        text = stringResource(R.string.feature_settings_playback)
-    )
 
     TextFieldRow(
         modifier = Modifier

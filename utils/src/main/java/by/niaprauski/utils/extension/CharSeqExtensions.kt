@@ -11,6 +11,7 @@ fun CharSequence?.ifNullOrEmpty(defaultValue: () -> CharSequence?): CharSequence
 
 fun String.convertToInt() = this.filter { it.isDigit() }.toInt()
 
+//TODO support other encodings(language)
 fun CharSequence?.fixOldEncoding(): CharSequence? {
     if (this.isNullOrBlank()) return this
 

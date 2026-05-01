@@ -9,7 +9,8 @@ import androidx.compose.ui.res.stringResource
 import by.niaprauski.designsystem.theme.AppTheme
 import by.niaprauski.designsystem.ui.row.SwitchRow
 import by.niaprauski.designsystem.ui.slider.RainbowSlider
-import by.niaprauski.designsystem.ui.text.TextBoldLarge
+import by.niaprauski.designsystem.ui.slider.rainbowBackgroundColors
+import by.niaprauski.designsystem.ui.slider.rainbowTextColor
 import by.niaprauski.designsystem.ui.text.TextMedium
 import by.niaprauski.translations.R
 
@@ -22,7 +23,6 @@ fun UISettingsView(
     onBackgroundColorChanged: (String, Float) -> Unit,
     onVisuallyChanged: (Boolean) -> Unit
 ) {
-    TextBoldLarge(text = stringResource(R.string.feature_settings_interface))
 
     TextMedium(
         modifier = Modifier.padding(top = AppTheme.padding.default),
@@ -33,6 +33,7 @@ fun UISettingsView(
         trackProgress = accentPosition,
         valueRange = 0f..1f,
         steps = 0,
+        colors = rainbowTextColor,
         onAccentColorChanged = onAccentColorChanged
     )
 
@@ -45,6 +46,7 @@ fun UISettingsView(
         trackProgress = backgroundPosition,
         valueRange = 0f..1f,
         steps = 0,
+        colors = rainbowBackgroundColors,
         onAccentColorChanged = onBackgroundColorChanged
     )
 

@@ -27,6 +27,7 @@
     <string name="feature_player_get">Атрымаць</string>
     <string name="feature_player_sync_complete">Сінхранізацыя завершана</string>
     <string name="feature_player_synchronization_failed">Памылка сінхраніхацыі</string>
+    <string name="feature_player_new_playlist_created">Новы плэйліст створаны</string>
 
 
     <!--    feature library-->

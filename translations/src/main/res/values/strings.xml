@@ -28,6 +28,7 @@
     <string name="feature_player_get">Get</string>
     <string name="feature_player_sync_complete">Sync complete</string>
     <string name="feature_player_synchronization_failed">Synchronization failed</string>
+    <string name="feature_player_new_playlist_created">New playlist created</string>
 
 
     <!--    feature library-->

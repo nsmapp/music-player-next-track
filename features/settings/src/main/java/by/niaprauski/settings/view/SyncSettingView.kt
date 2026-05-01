@@ -10,7 +10,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import by.niaprauski.designsystem.theme.AppTheme
 import by.niaprauski.designsystem.ui.row.TextFieldRow
-import by.niaprauski.designsystem.ui.text.TextBoldLarge
 import by.niaprauski.translations.R
 
 @Composable
@@ -22,10 +21,6 @@ fun SyncSettingView(
     onMinDurationChanged: (String) -> Unit,
     onMaxDurationChanged: (String) -> Unit
 ) {
-    TextBoldLarge(
-        modifier = Modifier.padding(top = AppTheme.padding.default),
-        text = stringResource(R.string.feature_settings_sync_settings)
-    )
 
     TextFieldRow(
         modifier = Modifier

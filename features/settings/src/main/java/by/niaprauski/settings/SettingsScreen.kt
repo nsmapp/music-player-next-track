@@ -5,8 +5,10 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
@@ -20,6 +22,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import by.niaprauski.designsystem.theme.AppTheme
 import by.niaprauski.designsystem.theme.dimens.defaultRoundedShape
+import by.niaprauski.designsystem.ui.flipper.FlipperView
 import by.niaprauski.designsystem.ui.text.TextBoldLarge
 import by.niaprauski.settings.models.SAction
 import by.niaprauski.settings.models.SettingsState
@@ -64,31 +67,71 @@ private fun SettingsScreenContent(
             .verticalScroll(rememberScrollState()),
     ) {
 
-        UISettingsView(
-            accentPosition = state.acentPositon,
-            backgroundPosition = state.backgroundPosition,
-            isVisuallyEnabled = state.isVisuallyEnabled,
-            onAccentColorChanged = { hex, pos -> onAction(SAction.SetAccentColor(hex, pos)) },
-            onBackgroundColorChanged = { hex, pos -> onAction(SAction.SetBackgroundColor(hex, pos)) },
-            onVisuallyChanged = { enabled -> onAction(SAction.SetVisuallyEnabled(enabled)) }
-        )
+        FlipperView(
+            modifier = Modifier
+                .fillMaxWidth()
+                .wrapContentHeight()
+                .padding(bottom = AppTheme.padding.default),
+            title = stringResource(R.string.feature_settings_interface)
+        ) {
+            UISettingsView(
+                accentPosition = state.acentPositon,
+                backgroundPosition = state.backgroundPosition,
+                isVisuallyEnabled = state.isVisuallyEnabled,
+                onAccentColorChanged = { hex, pos -> onAction(SAction.SetAccentColor(hex, pos)) },
+                onBackgroundColorChanged = { hex, pos ->
+                    onAction(
+                        SAction.SetBackgroundColor(
+                            hex,
+                            pos
+                        )
+                    )
+                },
+                onVisuallyChanged = { enabled -> onAction(SAction.SetVisuallyEnabled(enabled)) }
+            )
+        }
 
-        SyncSettingView(
-            minDuration = state.minDuration,
-            maxDuration = state.maxDuration,
-            isMinDurationError = state.isMinDurationError,
-            isMaxDurationError = state.isMaxDurationError,
-            onMinDurationChanged = { duration -> onAction(SAction.SetMinDuration(duration)) },
-            onMaxDurationChanged = { duration -> onAction(SAction.SetMaxDuration(duration)) },
-        )
 
-        PlayListSettingsView(
-            playlistLimitSize = state.playListLimitSize,
-            isPlayListLimitError = state.isPlayListLimitError,
-            isLikeTrackPriority = state.isLikeTrackPriority,
-            onLimitTrackChanged = { count -> onAction(SAction.SetPlayListLimitSize(count)) },
-            onAddLikeTrackInPlayList = { isLikeTrackPriority -> onAction(SAction.SetLikeTrackPriority(isLikeTrackPriority)) },
-        )
+        FlipperView(
+            modifier = Modifier
+                .fillMaxWidth()
+                .wrapContentHeight()
+                .padding(bottom = AppTheme.padding.default),
+            title = stringResource(R.string.feature_settings_sync_settings)
+        ) {
+            SyncSettingView(
+                minDuration = state.minDuration,
+                maxDuration = state.maxDuration,
+                isMinDurationError = state.isMinDurationError,
+                isMaxDurationError = state.isMaxDurationError,
+                onMinDurationChanged = { duration -> onAction(SAction.SetMinDuration(duration)) },
+                onMaxDurationChanged = { duration -> onAction(SAction.SetMaxDuration(duration)) },
+            )
+        }
+
+
+        FlipperView(
+            modifier = Modifier
+                .fillMaxWidth()
+                .wrapContentHeight()
+                .padding(bottom = AppTheme.padding.default),
+            title = stringResource(R.string.feature_settings_playback)
+        ) {
+
+            PlayListSettingsView(
+                playlistLimitSize = state.playListLimitSize,
+                isPlayListLimitError = state.isPlayListLimitError,
+                isLikeTrackPriority = state.isLikeTrackPriority,
+                onLimitTrackChanged = { count -> onAction(SAction.SetPlayListLimitSize(count)) },
+                onAddLikeTrackInPlayList = { isLikeTrackPriority ->
+                    onAction(
+                        SAction.SetLikeTrackPriority(
+                            isLikeTrackPriority
+                        )
+                    )
+                },
+            )
+        }
 
         Spacer(modifier = Modifier.weight(1f))
 

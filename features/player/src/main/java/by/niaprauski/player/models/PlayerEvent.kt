@@ -30,5 +30,8 @@ sealed class PlayerEvent {
     object MediaItemSynced: PlayerEvent()
     object MediaItemSyncError: PlayerEvent()
 
+    object PlaylistChanged: PlayerEvent()
+
+
     object Nothing: PlayerEvent()
 }

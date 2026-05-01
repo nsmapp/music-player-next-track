@@ -97,6 +97,8 @@ fun PlayerScreen(
                     context.showToast(context.getString(R.string.feature_player_sync_complete))
                 PlayerEvent.MediaItemSyncError ->
                     context.showToast(context.getString(R.string.feature_player_synchronization_failed))
+                PlayerEvent.PlaylistChanged ->
+                    context.showToast(context.getString(R.string.feature_player_new_playlist_created))
                 PlayerEvent.Nothing -> {
                     /**do nothing **/
                 }
