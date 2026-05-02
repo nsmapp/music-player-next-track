@@ -40,7 +40,7 @@ fun TrackProgressSlider(
     Box(
         contentAlignment = Alignment.BottomEnd
     ) {
-
+        //TODO blick slider when position changed(jump to old position)
         CSlider(
             modifier = Modifier.fillMaxWidth(),
             trackProgress = displayPosition,

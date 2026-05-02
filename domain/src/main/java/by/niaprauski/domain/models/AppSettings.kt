@@ -11,4 +11,6 @@ data class AppSettings(
     val backgroundPosition: Float,
     val playListLimitSize: Int,
     val isLikeTrackPriority: Boolean,
+    val likedTrackPercent: Int,
+    val isAutoPlayOnLaunch: Boolean,
 )

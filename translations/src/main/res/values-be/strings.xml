@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Next track</string>
+    <string name="app_name">My random playlist</string>
     <string name="app_version">v0.9</string>
 
     <!--    feature player-->
@@ -28,6 +28,7 @@
     <string name="feature_player_sync_complete">Сінхранізацыя завершана</string>
     <string name="feature_player_synchronization_failed">Памылка сінхраніхацыі</string>
     <string name="feature_player_new_playlist_created">Новы плэйліст створаны</string>
+    <string name="feature_player_current_playlist">Бягучы спіс прайгравання</string>
 
 
     <!--    feature library-->
@@ -50,6 +51,8 @@
     <string name="feature_settings_playback">Спіс прайгравання</string>
     <string name="feature_settings_liked_priority"> Заўсёды дадаваць любімыя трэкі</string>
     <string name="feature_settings_about_app">Пра дадатак</string>
+    <string name="feature_settings_liked_track_in_playlist">Абранае любімых трэкаў, %</string>
+    <string name="feature_settings_autoplay_after_launch">Аўтапрайграванне пасля запуску</string>
 
     <!--    feature about-->
     <string name="feature_about_application_description">Просты дадатак для праслухоўвання музыкі і онлайн-радыё — проста націсніце «Play».\n\nКалі ў вас ёсць ідэі па паляпшэнні або вы знайшлі памылку, калі ласка, звяжыцеся са мной.</string>

@@ -16,11 +16,25 @@ import by.niaprauski.translations.R
 @Composable
 fun PlayListSettingsView(
     playlistLimitSize: String,
+    likedTrackPercent: String,
     isPlayListLimitError: Boolean,
     isLikeTrackPriority: Boolean,
+    isAutoPlayAfterLaunch: Boolean,
     onLimitTrackChanged: (String) -> Unit,
+    onLikedTrackChanged: (String) -> Unit,
+    onAutoPlayChanged: (Boolean) -> Unit,
     onAddLikeTrackInPlayList: (Boolean) -> Unit,
 ) {
+
+    SwitchRow(
+        modifier = Modifier
+            .fillMaxWidth()
+            .wrapContentHeight()
+            .padding(AppTheme.padding.mini),
+        isChecked = isAutoPlayAfterLaunch,
+        label = stringResource(R.string.feature_settings_autoplay_after_launch),
+        onCheckedChange = onAutoPlayChanged,
+    )
 
     TextFieldRow(
         modifier = Modifier
@@ -30,6 +44,18 @@ fun PlayListSettingsView(
         text = playlistLimitSize,
         label = stringResource(R.string.feature_settings_max_tracks),
         onValueChange = onLimitTrackChanged,
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+        isError = isPlayListLimitError,
+    )
+
+    TextFieldRow(
+        modifier = Modifier
+            .fillMaxWidth()
+            .wrapContentHeight()
+            .padding(AppTheme.padding.mini),
+        text = likedTrackPercent,
+        label = stringResource(R.string.feature_settings_liked_track_in_playlist),
+        onValueChange = onLikedTrackChanged,
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
         isError = isPlayListLimitError,
     )

@@ -72,6 +72,33 @@ private fun SettingsScreenContent(
                 .fillMaxWidth()
                 .wrapContentHeight()
                 .padding(bottom = AppTheme.padding.default),
+            title = stringResource(R.string.feature_settings_playback)
+        ) {
+
+            PlayListSettingsView(
+                playlistLimitSize = state.playListLimitSize,
+                likedTrackPercent = state.likedTrackPercent,
+                isPlayListLimitError = state.isPlayListLimitError,
+                isLikeTrackPriority = state.isLikeTrackPriority,
+                isAutoPlayAfterLaunch = state.isAutoPlay,
+                onLimitTrackChanged = { count -> onAction(SAction.SetPlayListLimitSize(count)) },
+                onLikedTrackChanged = { percent -> onAction(SAction.SetLikedTrackPercent(percent)) },
+                onAutoPlayChanged = { enabled -> onAction(SAction.SetAutoPlay(enabled)) },
+                onAddLikeTrackInPlayList = { isLikeTrackPriority ->
+                    onAction(
+                        SAction.SetLikeTrackPriority(
+                            isLikeTrackPriority
+                        )
+                    )
+                },
+            )
+        }
+
+        FlipperView(
+            modifier = Modifier
+                .fillMaxWidth()
+                .wrapContentHeight()
+                .padding(bottom = AppTheme.padding.default),
             title = stringResource(R.string.feature_settings_interface)
         ) {
             UISettingsView(
@@ -91,7 +118,6 @@ private fun SettingsScreenContent(
             )
         }
 
-
         FlipperView(
             modifier = Modifier
                 .fillMaxWidth()
@@ -106,30 +132,6 @@ private fun SettingsScreenContent(
                 isMaxDurationError = state.isMaxDurationError,
                 onMinDurationChanged = { duration -> onAction(SAction.SetMinDuration(duration)) },
                 onMaxDurationChanged = { duration -> onAction(SAction.SetMaxDuration(duration)) },
-            )
-        }
-
-
-        FlipperView(
-            modifier = Modifier
-                .fillMaxWidth()
-                .wrapContentHeight()
-                .padding(bottom = AppTheme.padding.default),
-            title = stringResource(R.string.feature_settings_playback)
-        ) {
-
-            PlayListSettingsView(
-                playlistLimitSize = state.playListLimitSize,
-                isPlayListLimitError = state.isPlayListLimitError,
-                isLikeTrackPriority = state.isLikeTrackPriority,
-                onLimitTrackChanged = { count -> onAction(SAction.SetPlayListLimitSize(count)) },
-                onAddLikeTrackInPlayList = { isLikeTrackPriority ->
-                    onAction(
-                        SAction.SetLikeTrackPriority(
-                            isLikeTrackPriority
-                        )
-                    )
-                },
             )
         }
 

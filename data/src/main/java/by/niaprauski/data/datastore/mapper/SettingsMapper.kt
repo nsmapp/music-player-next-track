@@ -18,7 +18,9 @@ class SettingsMapper @Inject constructor() {
                 accentPosition = accentPosition,
                 backgroundPosition = backgroundPosition,
                 playListLimitSize = playlistLimitSize,
-                isLikeTrackPriority = isLikeTrackPriority
+                isLikeTrackPriority = isLikeTrackPriority,
+                likedTrackPercent = likedTrackPercent,
+                isAutoPlayOnLaunch = isAutoPlayOnStart,
             )
         }
     }

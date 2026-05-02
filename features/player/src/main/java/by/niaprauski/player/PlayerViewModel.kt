@@ -8,6 +8,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.media3.common.MediaItem
 import androidx.media3.common.util.UnstableApi
+import by.niaprauski.domain.models.AppSettings
+import by.niaprauski.domain.models.Track
 import by.niaprauski.domain.usecases.settings.GetSettingsFlowUseCase
 import by.niaprauski.domain.usecases.settings.SetWelcomeMessageStatusUseCase
 import by.niaprauski.domain.usecases.track.ChangeTrackFavoriteUseCase
@@ -77,6 +79,8 @@ class PlayerViewModel @AssistedInject constructor(
     private val _state = MutableStateFlow<PlayerState>(PlayerState.DEFAULT)
     val state = _state.asStateFlow()
 
+    private var appSettings: AppSettings? = null
+
     val exoPlayerState: StateFlow<ExoPlayerState> = playerService.flatMapLatest { service ->
         service?.state ?: flowOf(ExoPlayerState.DEFAULT)
     }.stateIn(
@@ -139,10 +143,19 @@ class PlayerViewModel @AssistedInject constructor(
     private fun loadTracks() {
         viewModelScope.launch {
             getTracksForPlayUseCase.invoke()
-                .onSuccess { items -> setPlayList(trackModelMapper.toMediaItems(items)) }
+                .onSuccess { items ->
+                    handleSuccessLoadTracks(items)
+                }
                 .onFailure {
                     //TODO add get track failure information
                 }
+        }
+    }
+
+    private suspend fun handleSuccessLoadTracks(items: List<Track>) {
+        setPlayList(trackModelMapper.toMediaItems(items))
+        appSettings?.isAutoPlayOnLaunch?.let { isAutoPlay ->
+            if (isAutoPlay) _event.send(PlayerEvent.Play)
         }
     }
 
@@ -337,6 +350,7 @@ class PlayerViewModel @AssistedInject constructor(
                         isVisuallyEnabled = settings.isVisuallyEnabled
                     )
                 }
+                appSettings = settings
             }
         }
     }

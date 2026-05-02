@@ -7,7 +7,9 @@ import android.net.Uri
 import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.annotation.OptIn
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -16,11 +18,15 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.media3.common.util.UnstableApi
 import by.niaprauski.designsystem.theme.AppTheme
+import by.niaprauski.designsystem.ui.text.TextBoldLarge
 import by.niaprauski.player.models.PAction
 import by.niaprauski.player.models.PlayerEvent
 import by.niaprauski.player.models.PlayerState
@@ -95,10 +101,13 @@ fun PlayerScreen(
 
                 PlayerEvent.MediaItemSynced ->
                     context.showToast(context.getString(R.string.feature_player_sync_complete))
+
                 PlayerEvent.MediaItemSyncError ->
                     context.showToast(context.getString(R.string.feature_player_synchronization_failed))
+
                 PlayerEvent.PlaylistChanged ->
                     context.showToast(context.getString(R.string.feature_player_new_playlist_created))
+
                 PlayerEvent.Nothing -> {
                     /**do nothing **/
                 }
@@ -134,10 +143,22 @@ fun PlayerScreen(
         ModalBottomSheet(
             onDismissRequest = { viewModel.onAction(PAction.HidePlayList) },
             sheetState = rememberModalBottomSheetState(
-                skipPartiallyExpanded = false
+                skipPartiallyExpanded = true
             ),
             containerColor = AppTheme.appColors.background,
+            dragHandle = {
+                BottomSheetDefaults.DragHandle(
+                    color = AppTheme.appColors.accent
+                )
+            }
         ) {
+
+            TextBoldLarge(
+                modifier = Modifier
+                    .align(Alignment.CenterHorizontally)
+                    .padding(bottom = AppTheme.padding.default),
+                text = stringResource(R.string.feature_player_current_playlist),
+            )
 
             LazyColumn {
                 items(

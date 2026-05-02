@@ -27,7 +27,11 @@ interface SettingsRepository {
 
     suspend fun setTrackLimit(count: Int)
 
+    suspend fun setLikedTrackPercent(percent: Int)
+
     suspend fun setLikeTrackPriority(isLikeTrackPriority: Boolean)
+
+    suspend fun setAutoPlay(isAutoPlay: Boolean)
 
 
 }

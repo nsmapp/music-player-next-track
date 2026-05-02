@@ -15,7 +15,10 @@ data class SettingsState(
     val isPlayListLimitError: Boolean,
     val playListLimitSize: String,
     val isLikeTrackPriority: Boolean,
+    val likedTrackPercent: String,
+    val isAutoPlay: Boolean,
 ){
+
     companion object{
         val INITIAL = SettingsState(
             isVisuallyEnabled = false,
@@ -28,6 +31,8 @@ data class SettingsState(
             isPlayListLimitError = false,
             playListLimitSize = "100",
             isLikeTrackPriority = true,
+            likedTrackPercent = "50",
+            isAutoPlay = false
         )
     }
 }

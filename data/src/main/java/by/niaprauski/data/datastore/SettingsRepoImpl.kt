@@ -87,10 +87,26 @@ class SettingsRepoImpl @Inject constructor(
         }
     }
 
+    override suspend fun setLikedTrackPercent(percent: Int) {
+        store.updateData { currentSettings ->
+            currentSettings.toBuilder()
+                .setLikedTrackPercent(percent)
+                .build()
+        }
+    }
+
     override suspend fun setLikeTrackPriority(isLikeTrackPriority: Boolean) {
         store.updateData { currentSettings ->
             currentSettings.toBuilder()
                 .setIsLikeTrackPriority(isLikeTrackPriority)
+                .build()
+        }
+    }
+
+    override suspend fun setAutoPlay(isAutoPlay: Boolean) {
+        store.updateData { currentSettings ->
+            currentSettings.toBuilder()
+                .setIsAutoPlayOnStart(isAutoPlay)
                 .build()
         }
     }

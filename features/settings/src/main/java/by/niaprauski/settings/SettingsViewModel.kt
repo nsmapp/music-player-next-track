@@ -5,8 +5,10 @@ import androidx.lifecycle.viewModelScope
 import by.niaprauski.domain.models.AppSettings
 import by.niaprauski.domain.usecases.settings.GetSettingsUseCase
 import by.niaprauski.domain.usecases.settings.SetAccentColorUseCase
+import by.niaprauski.domain.usecases.settings.SetAutoPlayAfterLaunchUseCase
 import by.niaprauski.domain.usecases.settings.SetBackgroundColorUseCase
 import by.niaprauski.domain.usecases.settings.SetLikeTrackPriorityUseCase
+import by.niaprauski.domain.usecases.settings.SetLikedTrackPercentInPlayListUseCase
 import by.niaprauski.domain.usecases.settings.SetMaxTrackDurationUseCase
 import by.niaprauski.domain.usecases.settings.SetMinTrackDurationUseCase
 import by.niaprauski.domain.usecases.settings.SetPlayListLimitSizeUseCase
@@ -14,6 +16,7 @@ import by.niaprauski.domain.usecases.settings.SetVisualizerStatusUseCase
 import by.niaprauski.settings.models.SAction
 import by.niaprauski.settings.models.SettingsState
 import by.niaprauski.utils.extension.convertToInt
+import by.niaprauski.utils.extension.onComplete
 import dagger.hilt.android.lifecycle.HiltViewModel
 import jakarta.inject.Inject
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -33,6 +36,8 @@ class SettingsViewModel @Inject constructor(
     private val setAccentColorUseCase: SetAccentColorUseCase,
     private val setBackgroundColorUseCase: SetBackgroundColorUseCase,
     private val setLikeTrackPriorityUseCase: SetLikeTrackPriorityUseCase,
+    private val setLikedTrackPercentUseCase: SetLikedTrackPercentInPlayListUseCase,
+    private val setAutoPlayAfterLaunchUseCase: SetAutoPlayAfterLaunchUseCase,
 ) : ViewModel() {
 
     companion object {
@@ -48,6 +53,7 @@ class SettingsViewModel @Inject constructor(
     private val _minDuration = MutableSharedFlow<Int>()
     private val _maxDuration = MutableSharedFlow<Int>()
     private val _maxTrackCount = MutableSharedFlow<Int>()
+    private val _likedTrackPercent = MutableSharedFlow<Int>()
 
 
     private val _accentPosition = MutableSharedFlow<Pair<String, Float>>()
@@ -67,6 +73,8 @@ class SettingsViewModel @Inject constructor(
             is SAction.SetBackgroundColor -> setBackgroundColorSettings(action.hexColor, action.position)
             is SAction.SetPlayListLimitSize -> setPlayListLimitSize(action.count)
             is SAction.SetLikeTrackPriority -> setLikeTrackPriority(action.isLikeTrackPriority)
+            is SAction.SetLikedTrackPercent -> setLikedTrackPercent(action.percent)
+            is SAction.SetAutoPlay -> setAutoPlayAfterLaunch(action.enabled)
         }
     }
 
@@ -94,7 +102,8 @@ class SettingsViewModel @Inject constructor(
                     backgroundPosition = backgroundPosition,
                     isPlayListLimitError = false,
                     playListLimitSize = playListLimitSize.toString(),
-                    isLikeTrackPriority = isLikeTrackPriority
+                    isLikeTrackPriority = isLikeTrackPriority,
+                    isAutoPlay = isAutoPlayOnLaunch
                 )
             }
         }
@@ -103,6 +112,7 @@ class SettingsViewModel @Inject constructor(
         startCollectMaxDuration()
         startCollectColorChanging()
         startCollectPlayListLimitSize()
+        startCollectLikedTrackPercent()
     }
 
 
@@ -141,6 +151,16 @@ class SettingsViewModel @Inject constructor(
                         .onFailure {
                             _state.update { it.copy(isPlayListLimitError = true) }
                         }
+                }
+        }
+    }
+
+    private fun startCollectLikedTrackPercent(){
+        viewModelScope.launch {
+            _likedTrackPercent
+                .debounce(INPUT_DEBOUNCE_TEXT)
+                .collect { percent ->
+                    setLikedTrackPercentUseCase.invoke(percent)
                 }
         }
     }
@@ -208,6 +228,19 @@ class SettingsViewModel @Inject constructor(
         }
     }
 
+    private fun setLikedTrackPercent(percent: String) {
+        var limit = percent.filter { it.isDigit() }
+        if (limit.length >= 3) return
+        if (limit == "0") limit = "1"
+        _state.update { it.copy(likedTrackPercent = limit) }
+        if (limit.isEmpty()) return
+
+        val finalLimit = limit.convertToInt()
+        viewModelScope.launch {
+            _likedTrackPercent.emit(finalLimit)
+        }
+    }
+
     private fun saveBackgroundColorSettings(hexColor: String, position: Float) {
         viewModelScope.launch {
             setBackgroundColorUseCase.invoke(hexColor, position)
@@ -243,6 +276,13 @@ class SettingsViewModel @Inject constructor(
             setLikeTrackPriorityUseCase.invoke(likeTrackPriority)
                 .onSuccess { _state.update { it.copy(isLikeTrackPriority = likeTrackPriority) } }
                 .onFailure { _state.update { it.copy(isLikeTrackPriority = !likeTrackPriority) } }
+        }
+    }
+
+    private fun setAutoPlayAfterLaunch(enabled: Boolean) {
+        viewModelScope.launch {
+            setAutoPlayAfterLaunchUseCase.invoke(enabled)
+                .onComplete { _state.update { it.copy(isAutoPlay = enabled) } }
         }
     }
 

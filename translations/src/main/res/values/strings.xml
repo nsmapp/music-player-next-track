@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Next track</string>
+    <string name="app_name">My random playlist</string>
     <string name="app_version"> v0.9</string>
     <!--    //TODO move version to properties-->
 
@@ -29,6 +29,7 @@
     <string name="feature_player_sync_complete">Sync complete</string>
     <string name="feature_player_synchronization_failed">Synchronization failed</string>
     <string name="feature_player_new_playlist_created">New playlist created</string>
+    <string name="feature_player_current_playlist">Current playlist</string>
 
 
     <!--    feature library-->
@@ -52,6 +53,8 @@
     <string name="feature_settings_playback">Playback</string>
     <string name="feature_settings_liked_priority">Always include liked tracks</string>
     <string name="feature_settings_about_app">About app</string>
+    <string name="feature_settings_liked_track_in_playlist">Liked track in playlist, %</string>
+    <string name="feature_settings_autoplay_after_launch">Autoplay after launch</string>
 
     <!--    feature about-->
     <string name="feature_about_application_description">A simple music and online radio player — just hit “Play”.\n\nIf you have any suggestions or found a bug, feel free to reach out.</string>

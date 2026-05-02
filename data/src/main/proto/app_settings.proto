@@ -14,4 +14,6 @@ message AppSettingsEntity {
     float background_position = 9;
     int32 playlist_limit_size = 10;
     bool is_like_track_priority = 11;
+    int32 liked_track_percent = 12;
+    bool is_auto_play_on_start= 13;
 }
