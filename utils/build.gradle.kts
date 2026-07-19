@@ -9,6 +9,8 @@ android {
 }
 
 dependencies {
+    implementation(project(":domain"))
     implementation(libs.androidx.activity.compose)
     implementation(libs.media3.mediasession)
+    implementation(libs.kotlinx.coroutines.core)
 }

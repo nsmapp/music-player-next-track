@@ -1,6 +1,9 @@
 package by.niaprauski.nt.di
 
 import android.content.Context
+import by.niaprauski.domain.utils.DispatcherProvider
+import by.niaprauski.domain.utils.MetadataProvider
+import by.niaprauski.utils.media.MetadataProviderImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -16,5 +19,11 @@ object AppModule {
     @Singleton
     fun provideApplicationContext(@ApplicationContext context: Context): Context {
         return context
+    }
+
+    @Provides
+    @Singleton
+    fun provideMetadataProvider(@ApplicationContext context: Context): MetadataProvider {
+        return MetadataProviderImpl(context, DispatcherProvider())
     }
 }

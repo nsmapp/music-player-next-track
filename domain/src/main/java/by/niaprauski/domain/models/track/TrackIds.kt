@@ -1,4 +1,4 @@
-package by.niaprauski.domain.models
+package by.niaprauski.domain.models.track
 
 data class TrackIds(
     val unliked: List<String>,

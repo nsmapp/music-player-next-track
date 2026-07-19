@@ -2,6 +2,7 @@ package by.niaprauski.nt.di
 
 import android.content.Context
 import by.niaprauski.data.database.AppDatabase
+import by.niaprauski.data.database.dao.TagDao
 import by.niaprauski.data.database.dao.TrackDao
 import by.niaprauski.data.database.getRoom
 import dagger.Module
@@ -26,4 +27,11 @@ object DatabaseModule {
     fun provideTackDao(db: AppDatabase): TrackDao {
         return db.trackDao()
     }
+
+    @Singleton
+    @Provides
+    fun provideTagDao(db: AppDatabase): TagDao {
+        return db.tagDao()
+    }
+
 }

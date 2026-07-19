@@ -1,8 +1,10 @@
 package by.niaprauski.nt.di
 
-import by.niaprauski.data.datastore.SettingsRepoImpl
+import by.niaprauski.data.repoimpl.SettingsRepoImpl
+import by.niaprauski.data.repoimpl.TagRepoImpl
 import by.niaprauski.data.repoimpl.TrackRepoImpl
 import by.niaprauski.domain.repository.SettingsRepository
+import by.niaprauski.domain.repository.TagRepository
 import by.niaprauski.domain.repository.TrackRepository
 import dagger.Binds
 import dagger.Module
@@ -22,4 +24,10 @@ abstract class RepositoryModule {
     abstract fun bindSettingsRepository(
         settingsRepoImpl: SettingsRepoImpl
     ): SettingsRepository
+
+    @Binds
+    abstract fun bindTagRepository(
+        tagRepoImpl: TagRepoImpl
+    ): TagRepository
+
 }

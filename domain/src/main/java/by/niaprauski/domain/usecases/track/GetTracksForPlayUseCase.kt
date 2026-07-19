@@ -1,8 +1,8 @@
 package by.niaprauski.domain.usecases.track
 
-import by.niaprauski.domain.models.PlayListConfig
-import by.niaprauski.domain.models.Track
-import by.niaprauski.domain.models.TrackIds
+import by.niaprauski.domain.models.settings.PlayListConfig
+import by.niaprauski.domain.models.track.Track
+import by.niaprauski.domain.models.track.TrackIds
 import by.niaprauski.domain.repository.SettingsRepository
 import by.niaprauski.domain.repository.TrackRepository
 import by.niaprauski.domain.utils.DispatcherProvider

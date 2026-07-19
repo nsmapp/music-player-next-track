@@ -1,7 +1,7 @@
 package by.niaprauski.domain.usecases.track
 
-import by.niaprauski.domain.models.AppSettings
-import by.niaprauski.domain.models.Track
+import by.niaprauski.domain.models.settings.AppSettings
+import by.niaprauski.domain.models.track.Track
 import by.niaprauski.domain.repository.TrackRepository
 import by.niaprauski.domain.usecases.settings.GetSettingsUseCase
 import by.niaprauski.domain.utils.DispatcherProvider
@@ -11,7 +11,7 @@ import javax.inject.Inject
 class FilterAndSaveTracksUseCase @Inject constructor(
     private val trackRepository: TrackRepository,
     private val getSettingsUseCase: GetSettingsUseCase,
-    private val dispatcherProvider: DispatcherProvider
+    private val dispatcherProvider: DispatcherProvider,
 ) {
 
     suspend operator fun invoke(

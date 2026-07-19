@@ -4,12 +4,10 @@ import androidx.media3.common.audio.AudioProcessor
 import androidx.media3.common.audio.AudioProcessor.EMPTY_BUFFER
 import androidx.media3.common.util.UnstableApi
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 
@@ -19,9 +17,10 @@ class SoundProcessor(
     private val waveForm: MutableStateFlow<FloatArray>,
 ) : AudioProcessor {
 
-    private val waveChannel = Channel<ByteBuffer>(Channel.CONFLATED)
+    private val waveChannel = Channel<FloatArray>(Channel.CONFLATED)
 
     private var isVisuallyEnabled = false
+    private var lastProcessTime = 0L
     private var chank: Int = 64
 
     private var inputAudioFormat = AudioProcessor.AudioFormat.NOT_SET
@@ -31,8 +30,7 @@ class SoundProcessor(
 
     init {
         scope.launch {
-            for (buffer in waveChannel) {
-                val array = processWave(buffer)
+            for (array in waveChannel) {
                 waveForm.update { array }
             }
         }
@@ -51,43 +49,47 @@ class SoundProcessor(
         if (!inputBuffer.hasRemaining()) return
 
         val count = inputBuffer.remaining()
+        if (count == 0) return
 
-        if (buffer.capacity() < count) buffer = ByteBuffer.allocateDirect(count)
+        if (isVisuallyEnabled) {
+            val currentTime = System.currentTimeMillis()
+            if (currentTime - lastProcessTime >= 30) {
+                lastProcessTime = currentTime
+                waveChannel.trySend(extractWaveform(inputBuffer))
+            }
+        }
+
+        if (buffer.capacity() < count) buffer = ByteBuffer
+            .allocateDirect(count)
             .order(ByteOrder.nativeOrder())
         else buffer.clear()
-
-        if (isVisuallyEnabled) waveChannel.trySend(buffer)
 
         buffer.put(inputBuffer)
         buffer.flip()
         outputBuffer = buffer
     }
 
-    private suspend fun processWave(buffer: ByteBuffer): FloatArray =
-        withContext(Dispatchers.Default) {
-            buffer.order(ByteOrder.nativeOrder())
+    private fun extractWaveform(buffer: ByteBuffer): FloatArray {
+        val dup = buffer.duplicate().order(ByteOrder.nativeOrder())
+        val limit = dup.limit()
+        val totalSamples = dup.remaining() / 2
+        val targetPoints = chank
 
-            val limit = buffer.limit()
-            val totalSamples = buffer.remaining() / 2
-            val targetPoints = chank
+        val actualPoints = if (totalSamples < targetPoints) totalSamples else targetPoints
+        val waveArray = FloatArray(targetPoints)
+        if (actualPoints <= 0) return waveArray
 
-            val actualPoints = if (totalSamples < targetPoints) totalSamples else targetPoints
-            val waveArray = FloatArray(targetPoints)
-            if (totalSamples == 0) return@withContext waveArray
+        val step = totalSamples / actualPoints
 
-            val step = totalSamples / actualPoints
-
-            for (i in 0 until actualPoints) {
-                val index = i * step
-                val position = index * 2
-
-                if (index * 2 < limit) {
-                    val sample = buffer.getShort(position).toFloat() / Short.MAX_VALUE
-                    waveArray[i] = sample
-                }
+        for (i in 0 until actualPoints) {
+            val position = (i * step) * 2
+            if (position + 1 < limit) {
+                val sample = dup.getShort(position).toFloat() / Short.MAX_VALUE
+                waveArray[i] = sample
             }
-            waveArray
         }
+        return waveArray
+    }
 
     override fun queueEndOfStream() {
         inputEnded = true

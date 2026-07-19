@@ -2,7 +2,7 @@ package by.niaprauski.settings
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import by.niaprauski.domain.models.AppSettings
+import by.niaprauski.domain.models.settings.AppSettings
 import by.niaprauski.domain.usecases.settings.GetSettingsUseCase
 import by.niaprauski.domain.usecases.settings.SetAccentColorUseCase
 import by.niaprauski.domain.usecases.settings.SetAutoPlayAfterLaunchUseCase

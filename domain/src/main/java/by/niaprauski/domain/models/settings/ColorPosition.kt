@@ -1,4 +1,4 @@
-package by.niaprauski.domain.models
+package by.niaprauski.domain.models.settings
 
 data class ColorPosition(
     val colorHex: String,

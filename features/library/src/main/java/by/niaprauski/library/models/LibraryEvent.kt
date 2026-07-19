@@ -11,4 +11,6 @@ sealed class LibraryEvent {
     object Play: LibraryEvent()
     object Pause: LibraryEvent()
 
+    data class PlayMediaItems(val mediaItems: List<MediaItem>): LibraryEvent()
+
 }

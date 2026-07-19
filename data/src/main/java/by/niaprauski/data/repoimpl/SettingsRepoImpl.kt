@@ -1,9 +1,10 @@
-package by.niaprauski.data.datastore
+package by.niaprauski.data.repoimpl
 
 import androidx.datastore.core.DataStore
+import by.niaprauski.data.datastore.AppSettingsEntity
 import by.niaprauski.data.datastore.mapper.SettingsMapper
-import by.niaprauski.domain.models.AppSettings
-import by.niaprauski.domain.models.ColorPosition
+import by.niaprauski.domain.models.settings.AppSettings
+import by.niaprauski.domain.models.settings.ColorPosition
 import by.niaprauski.domain.repository.SettingsRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first

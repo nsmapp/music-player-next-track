@@ -68,5 +68,6 @@
     <string name="feature_play_service_pause">Pause</string>
     <string name="feature_play_service_play">Play</string>
     <string name="feature_play_service_next">Next</string>
+    <string name="feature_library_unanalyzed_tracks">Tag creation</string>
 
 </resources>

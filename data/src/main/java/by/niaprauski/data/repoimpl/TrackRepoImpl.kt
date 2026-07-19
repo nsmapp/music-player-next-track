@@ -6,10 +6,10 @@ import androidx.paging.PagingData
 import androidx.paging.map
 import by.niaprauski.data.database.dao.TrackDao
 import by.niaprauski.data.mappers.TrackMapper
-import by.niaprauski.domain.models.PlayListConfig
-import by.niaprauski.domain.models.SearchTrackFilter
-import by.niaprauski.domain.models.Track
-import by.niaprauski.domain.models.TrackIds
+import by.niaprauski.domain.models.search.SearchTrackFilter
+import by.niaprauski.domain.models.settings.PlayListConfig
+import by.niaprauski.domain.models.track.Track
+import by.niaprauski.domain.models.track.TrackIds
 import by.niaprauski.domain.repository.TrackRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -30,10 +30,6 @@ class TrackRepoImpl @Inject constructor(
         trackDao.insertAll(list)
     }
 
-    override fun getAll(): List<Track> = trackDao.getAll()
-        .map {track -> trackMapper.toModel(track) }
-
-
     override fun getTrackIds(config: PlayListConfig): TrackIds {
         val unlikeIds = trackDao.getUnlikeIdsWithoutIgnored(
             minDuration = config.minDuration,
@@ -52,18 +48,6 @@ class TrackRepoImpl @Inject constructor(
         trackDao.getTracksByIds(playListIds)
             .map { trackMapper.toModel(it) }
 
-    override fun getAllAsFlow(): Flow<List<Track>> = trackDao
-        .getAllAsFlow()
-        .map { tracks ->
-            tracks.map { trackMapper.toModel(it) }
-        }
-
-    override fun getAllAsFlow(filter: SearchTrackFilter): Flow<List<Track>> =
-        trackDao.getAllAsFlow(filter.text)
-            .map { tracks ->
-                tracks.map { trackMapper.toModel(it) }
-            }
-
     override fun getPagedFlow(filter: SearchTrackFilter): Flow<PagingData<Track>> =
         Pager(
             config = PagingConfig(pageSize = 40, prefetchDistance = 10, initialLoadSize = 80, enablePlaceholders = false),
@@ -71,6 +55,9 @@ class TrackRepoImpl @Inject constructor(
         ).flow.map { pagingData ->
             pagingData.map { trackMapper.toModel(it) }
         }
+
+    override fun getTracksIdsByFilter(filter: SearchTrackFilter): List<String> =
+        trackDao.getTracksIdsByFilter(filter.text)
 
     override fun markTrackAsIgnored(trackId: String) {
         trackDao.markTrackAsIgnore(trackId)
@@ -87,4 +74,6 @@ class TrackRepoImpl @Inject constructor(
         val track = trackDao.getById(trackId) ?: return null
         return trackMapper.toModel(track)
     }
+
+    override fun getUnanalyzedTrackCount(): Flow<Int> = trackDao.getUnanalyzedTrackCount()
 }

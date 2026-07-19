@@ -66,6 +66,10 @@ fun LibraryScreen(
                 is LibraryEvent.AddMediaItem -> playerService?.addItemToPlayList(event.mediaItem)
                 is LibraryEvent.Play -> playerService?.play()
                 is LibraryEvent.Pause -> playerService?.pause()
+                is LibraryEvent.PlayMediaItems -> {
+                    playerService?.setTracks(event.mediaItems)
+                    playerService?.play()
+                }
             }
         }
     }

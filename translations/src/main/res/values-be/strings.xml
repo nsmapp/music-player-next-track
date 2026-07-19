@@ -65,4 +65,5 @@
     <string name="feature_play_service_pause">Прыпыніць</string>
     <string name="feature_play_service_play">Прайграць</string>
     <string name="feature_play_service_next">Наступны</string>
+    <string name="feature_library_unanalyzed_tracks">Стварэнне тэгаў</string>
 </resources>

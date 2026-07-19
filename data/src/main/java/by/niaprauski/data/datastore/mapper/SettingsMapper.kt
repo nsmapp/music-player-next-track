@@ -1,7 +1,7 @@
 package by.niaprauski.data.datastore.mapper
 
 import by.niaprauski.data.datastore.AppSettingsEntity
-import by.niaprauski.domain.models.AppSettings
+import by.niaprauski.domain.models.settings.AppSettings
 import javax.inject.Inject
 
 class SettingsMapper @Inject constructor() {

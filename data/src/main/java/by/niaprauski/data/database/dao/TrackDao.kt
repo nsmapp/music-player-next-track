@@ -11,9 +11,6 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface TrackDao {
 
-    @Query("SELECT * FROM tracks WHERE is_ignore == 0 ORDER BY favorite DESC")
-    fun getAll(): List<TrackEntity>
-
     @Query(
         "SELECT id FROM tracks " +
                 "WHERE is_ignore = 0 AND favorite = 0 " +
@@ -36,13 +33,7 @@ interface TrackDao {
     @Query("SELECT * FROM tracks WHERE id IN (:ids) ORDER BY favorite DESC")
     fun getTracksByIds(ids: List<String>): List<TrackEntity>
 
-    @Query("SELECT * FROM tracks")
-    fun getAllAsFlow(): Flow<List<TrackEntity>>
-
-    @Query("SELECT * FROM tracks WHERE name LIKE ('%' || :text || '%') OR name LIKE ('%' || :text || '%') ")
-    fun getAllAsFlow(text: String): Flow<List<TrackEntity>>
-
-    @Query("SELECT * FROM tracks WHERE name LIKE ('%' || :text || '%') OR name LIKE ('%' || :text || '%') ")
+    @Query("SELECT * FROM tracks WHERE name LIKE ('%' || :text || '%')")
     fun getPagedFlow(text: String): PagingSource<Int, TrackEntity>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
@@ -65,4 +56,16 @@ interface TrackDao {
 
     @Query("UPDATE tracks SET favorite = :value WHERE id = :trackId")
     fun upTrackFavorite(trackId: String, value: Int)
+
+    @Query("SELECT * FROM tracks WHERE is_analyzed = 0 LIMIT :limit")
+    fun getTracksForAnalysis(limit: Int): List<TrackEntity>
+
+    @Query("UPDATE tracks SET is_analyzed = 1 WHERE id IN (:trackIds)")
+    fun markAsAnalyzed(trackIds: List<String>)
+
+    @Query("SELECT COUNT(*) FROM tracks WHERE is_analyzed = 0")
+    fun getUnanalyzedTrackCount(): Flow<Int>
+
+    @Query("SELECT id FROM tracks WHERE name LIKE ('%' || :text || '%') AND is_ignore = 0 ")
+    fun getTracksIdsByFilter(text: String): List<String>
 }

@@ -1,7 +1,7 @@
 package by.niaprauski.player.mapper
 
 import androidx.media3.common.MediaItem
-import by.niaprauski.domain.models.Track
+import by.niaprauski.domain.models.track.Track
 import by.niaprauski.domain.utils.DispatcherProvider
 import by.niaprauski.utils.media.MediaHandler
 import by.niaprauski.utils.models.ITrack

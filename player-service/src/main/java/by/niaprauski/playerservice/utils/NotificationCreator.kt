@@ -20,6 +20,7 @@ import androidx.media3.session.MediaStyleNotificationHelper
 import by.niaprauski.translations.R
 import by.niaprauski.utils.extension.fixOldEncoding
 import by.niaprauski.utils.extension.getFileName
+import by.niaprauski.utils.extension.ifNullOrEmpty
 import by.niaprauski.utils.intents.OpenAppIntent
 
 //TODO? migrate to MediaNotification.Provider
@@ -120,10 +121,10 @@ class NotificationCreator {
             context.getString(R.string.feature_player_service_next_track)
         val trackDefaultArtist =
             context.getString(R.string.feature_player_service_next_artist)
-        val trackTitle =
-            mediaMetadata?.title.fixOldEncoding() ?: mediaMetadata?.getFileName(trackDefaultTitle)
-        val trackArtist =
-            mediaMetadata?.artist.fixOldEncoding() ?: mediaMetadata?.getFileName(trackDefaultArtist)
+        val trackTitle = mediaMetadata?.title.fixOldEncoding()
+            .ifNullOrEmpty { mediaMetadata?.getFileName(trackDefaultTitle) }
+        val trackArtist = mediaMetadata?.artist.fixOldEncoding()
+            .ifNullOrEmpty { mediaMetadata?.getFileName(trackDefaultArtist) }
         builder.setContentTitle(trackTitle)
             .setContentText(trackArtist)
     }

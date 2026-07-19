@@ -1,7 +1,7 @@
 package by.niaprauski.data.mappers
 
 import by.niaprauski.data.database.entity.TrackEntity
-import by.niaprauski.domain.models.Track
+import by.niaprauski.domain.models.track.Track
 import javax.inject.Inject
 
 class TrackMapper @Inject constructor(){

@@ -1,4 +1,4 @@
-package by.niaprauski.domain.models
+package by.niaprauski.domain.models.settings
 
 data class AppSettings(
     val isShowWelcomeMessage: Boolean,

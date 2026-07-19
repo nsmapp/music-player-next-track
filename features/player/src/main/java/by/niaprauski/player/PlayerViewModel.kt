@@ -8,8 +8,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.media3.common.MediaItem
 import androidx.media3.common.util.UnstableApi
-import by.niaprauski.domain.models.AppSettings
-import by.niaprauski.domain.models.Track
+import by.niaprauski.domain.models.settings.AppSettings
+import by.niaprauski.domain.models.track.Track
 import by.niaprauski.domain.usecases.settings.GetSettingsFlowUseCase
 import by.niaprauski.domain.usecases.settings.SetWelcomeMessageStatusUseCase
 import by.niaprauski.domain.usecases.track.ChangeTrackFavoriteUseCase
@@ -362,7 +362,7 @@ class PlayerViewModel @AssistedInject constructor(
 
     private fun startPlayerService(context: Context) {
         val intent = Intent(context, PlayerService::class.java)
-        context.startService(intent)
+        context.startForegroundService(intent)
     }
 
     companion object {

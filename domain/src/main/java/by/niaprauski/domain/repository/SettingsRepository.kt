@@ -1,7 +1,7 @@
 package by.niaprauski.domain.repository
 
-import by.niaprauski.domain.models.AppSettings
-import by.niaprauski.domain.models.ColorPosition
+import by.niaprauski.domain.models.settings.AppSettings
+import by.niaprauski.domain.models.settings.ColorPosition
 import kotlinx.coroutines.flow.Flow
 
 

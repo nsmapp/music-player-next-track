@@ -21,4 +21,6 @@ data class TrackEntity(
     val duration: Long,
     @ColumnInfo("favorite")
     val favorite: Int,
+    @ColumnInfo("is_analyzed")
+    val isAnalyzed: Boolean = false,
 )

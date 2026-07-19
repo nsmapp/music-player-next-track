@@ -23,6 +23,22 @@ import java.io.InputStreamReader
 
 object MediaHandler {
 
+    val radioMimeTypes = arrayOf(
+        MimeType.PLS.type,
+        MimeType.M3U.type,
+        MimeType.M3U8.type
+    )
+
+    val audioMimeTypes = arrayOf(
+        MimeType.OGG.type,
+        MimeType.MPEG.type,
+        MimeType.OPUS.type,
+        MimeType.AAC.type,
+        MimeType.FLAC.type,
+        MimeType.WAV.type,
+        MimeType.M4A.type
+    )
+
     fun getTrackData(
         cr: ContentResolver,
     ): List<ITrack> {
@@ -36,15 +52,12 @@ object MediaHandler {
             MediaStore.Audio.Media.DURATION,
         )
 
-        val selection = "($MIME_TYPE = ? OR $MIME_TYPE = ? OR " +
-                "($MIME_TYPE = ? OR $MIME_TYPE = ?) AND ${MediaStore.Audio.Media.DURATION} >= 0)"
-        //TODO handle "audio/*"
-        val selectionArgs = arrayOf(
-            MimeType.PLS.type,
-            MimeType.M3U.type,
-            MimeType.OGG.type,
-            MimeType.MPEG.type,
-        )
+
+        val playlistSelection = radioMimeTypes.joinToString(",") { "?" }
+        val audioSelection = audioMimeTypes.joinToString(",") { "?" }
+
+        val selection = "($MIME_TYPE IN ($playlistSelection)) OR ($MIME_TYPE IN ($audioSelection))"
+        val selectionArgs = radioMimeTypes + audioMimeTypes
 
         val cursor =
             cr.query(/* uri = */ MediaStore.Files.getContentUri("external"),/* projection = */
@@ -69,7 +82,7 @@ object MediaHandler {
 
 
                 val isRadio = when (mimeType) {
-                    MimeType.M3U.type, MimeType.PLS.type -> true
+                    in radioMimeTypes -> true
                     else -> false
                 }
 
@@ -111,7 +124,7 @@ object MediaHandler {
             while (reader.readLine().also { line = it } != null) {
                 val trimmedLine = line?.trim() ?: continue
                 val streamUrl = when (mimeType) {
-                    MimeType.M3U.type -> parseM3uLine(trimmedLine)
+                    MimeType.M3U.type, MimeType.M3U8.type -> parseM3uLine(trimmedLine)
                     MimeType.PLS.type -> parsePlsLine(trimmedLine)
                     else -> null
                 }

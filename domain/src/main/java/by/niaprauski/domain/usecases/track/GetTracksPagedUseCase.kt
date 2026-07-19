@@ -1,8 +1,8 @@
 package by.niaprauski.domain.usecases.track
 
 import androidx.paging.PagingData
-import by.niaprauski.domain.models.SearchTrackFilter
-import by.niaprauski.domain.models.Track
+import by.niaprauski.domain.models.search.SearchTrackFilter
+import by.niaprauski.domain.models.track.Track
 import by.niaprauski.domain.repository.TrackRepository
 import by.niaprauski.domain.utils.DispatcherProvider
 import kotlinx.coroutines.flow.Flow

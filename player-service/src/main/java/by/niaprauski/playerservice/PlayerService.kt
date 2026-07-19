@@ -3,7 +3,9 @@ package by.niaprauski.playerservice
 import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
+import android.content.pm.ServiceInfo
 import android.os.Binder
+import android.os.Build
 import android.os.IBinder
 import androidx.media3.common.AudioAttributes
 import androidx.media3.common.C
@@ -21,6 +23,7 @@ import androidx.media3.exoplayer.util.EventLogger
 import androidx.media3.session.MediaSession
 import androidx.media3.session.MediaSessionService
 import by.niaprauski.domain.usecases.settings.GetSettingsFlowUseCase
+import by.niaprauski.domain.usecases.tag.AnalyzeTrackMetadataUseCase
 import by.niaprauski.playerservice.models.ExoPlayerState
 import by.niaprauski.playerservice.models.PlayerServiceAction
 import by.niaprauski.playerservice.models.TrackProgress
@@ -62,6 +65,9 @@ class PlayerService : MediaSessionService() {
 
     @Inject
     lateinit var getSettingsFlowUseCase: Lazy<GetSettingsFlowUseCase>
+
+    @Inject
+    lateinit var analyzeTrackMetadataUseCase: Lazy<AnalyzeTrackMetadataUseCase>
 
     private val serviceScope = CoroutineScope(Dispatchers.Main + SupervisorJob())
 
@@ -110,6 +116,24 @@ class PlayerService : MediaSessionService() {
         }
 
         observeAppSettings()
+        startMetadataAnalysis()
+    }
+
+    private fun startMetadataAnalysis() {
+        serviceScope.launch(Dispatchers.IO) {
+            delay(5000)
+            runAnalysisCycle()
+        }
+    }
+
+    private suspend fun runAnalysisCycle() {
+        val result = analyzeTrackMetadataUseCase.get().invoke(limit = 63)
+        val processedCount = result.getOrDefault(0)
+
+        if (processedCount > 0) {
+            delay(1500)
+            runAnalysisCycle()
+        }
     }
 
     private fun observeAppSettings() {
@@ -143,17 +167,16 @@ class PlayerService : MediaSessionService() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        when (intent?.action) {
-            PlayerServiceAction.PLAY.name -> play()
-            PlayerServiceAction.PAUSE.name -> pause()
-            PlayerServiceAction.STOP.name -> stop()
-            PlayerServiceAction.PREVIOUS_TRACK.name -> seekToPrevious()
-            PlayerServiceAction.NEXT_TRACK.name -> seekToNext()
+        val action = super.onStartCommand(intent, flags, startId)
 
-            else -> {
-                //do nothing
+        intent?.action?.let { intentAction ->
+            when (intentAction) {
+                PlayerServiceAction.PLAY.name -> play()
+                PlayerServiceAction.PAUSE.name -> pause()
+                PlayerServiceAction.STOP.name -> stop()
+                PlayerServiceAction.PREVIOUS_TRACK.name -> seekToPrevious()
+                PlayerServiceAction.NEXT_TRACK.name -> seekToNext()
             }
-
         }
 
         val notification = notificationCreator.buildNotification(
@@ -161,10 +184,16 @@ class PlayerService : MediaSessionService() {
             player = player,
             mediaSession = mediaSession,
         )
-        startForeground(notificationId, notification)
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
+            startForeground(
+                /* id = */ notificationId,
+                /* notification = */ notification,
+                /* foregroundServiceType = */ ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK
+            )
+        else startForeground(notificationId, notification)
 
-        return START_STICKY
+        return action
     }
 
     override fun onDestroy() {
@@ -403,7 +432,7 @@ class PlayerService : MediaSessionService() {
 
         override fun onEvents(player: Player, events: Player.Events) {
             super.onEvents(player, events)
-            
+
             handlePlayerControlEvents(events, player)
             handleIsPlayingChanged(events, player)
             handleMetadataChanged(events, player)
