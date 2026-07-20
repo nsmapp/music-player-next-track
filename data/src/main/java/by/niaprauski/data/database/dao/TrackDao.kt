@@ -5,6 +5,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Transaction
 import by.niaprauski.data.database.entity.TrackEntity
 import kotlinx.coroutines.flow.Flow
 
@@ -68,4 +69,14 @@ interface TrackDao {
 
     @Query("SELECT id FROM tracks WHERE name LIKE ('%' || :text || '%') AND is_ignore = 0 ")
     fun getTracksIdsByFilter(text: String): List<String>
+
+    @Query("DELETE FROM track_tag_link WHERE track_id IN (:brokenTracksIds)")
+    fun deleteOldTags(brokenTracksIds: List<String>)
+
+    @Transaction
+    fun updateTracksLibrary(brokenIds: List<String>, newTracks: List<TrackEntity>) {
+        deleteByIds(brokenIds)
+        deleteOldTags(brokenIds)
+        insertAll(newTracks)
+    }
 }

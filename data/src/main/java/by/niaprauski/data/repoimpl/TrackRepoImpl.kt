@@ -20,14 +20,12 @@ class TrackRepoImpl @Inject constructor(
     private val trackMapper: TrackMapper
 ): TrackRepository {
 
-
     override fun saveTrackInfo(tracks: List<Track>) {
         val validPaths = tracks.map { it.id }
         val brokenTracksIds = trackDao.getBrokenTracksIds(validPaths)
-        trackDao.deleteByIds(brokenTracksIds)
+        val tracksForInsert = tracks.map { track -> trackMapper.toEntity(track) }
 
-        val list = tracks.map { track -> trackMapper.toEntity(track) }
-        trackDao.insertAll(list)
+        trackDao.updateTracksLibrary(brokenIds = brokenTracksIds, newTracks = tracksForInsert)
     }
 
     override fun getTrackIds(config: PlayListConfig): TrackIds {
