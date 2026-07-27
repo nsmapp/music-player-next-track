@@ -6,6 +6,7 @@ import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -69,6 +70,11 @@ fun TrackItem(
 
         Column(modifier = Modifier.weight(1f)) {
             TextMedium(
+                modifier = Modifier.basicMarquee(
+                    iterations = if (isSelected) Int.MAX_VALUE else 1,
+                    initialDelayMillis = 3000,
+                    velocity = 30.dp,
+                ),
                 text = track.nameWithFavorite,
                 color = contentColor,
                 maxLines = 1,
@@ -82,7 +88,7 @@ fun TrackItem(
             onActionFirstClick = {onAction(LAction.RestoreTrack(track))},
             onActionSecondClick = {onAction(LAction.IgnoreTrack(track))},
             iconFirst = remember { IIcon.reply},
-            iconSecond = remember { IIcon.cancel },
+            iconSecond = remember { IIcon.hide },
             descriptionFirst = stringResource(R.string.feature_library_restore_track),
             descriptionSecond = stringResource(R.string.feature_library_ignore),
         )

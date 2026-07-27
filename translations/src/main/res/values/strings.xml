@@ -69,5 +69,6 @@
     <string name="feature_play_service_play">Play</string>
     <string name="feature_play_service_next">Next</string>
     <string name="feature_library_unanalyzed_tracks">Tag creation</string>
+    <string name="feature_player_delete_from_playlist">Remove from playlist</string>
 
 </resources>

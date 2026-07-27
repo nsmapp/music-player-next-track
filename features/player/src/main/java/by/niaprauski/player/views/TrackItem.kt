@@ -28,12 +28,14 @@ import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import by.niaprauski.designsystem.theme.AppTheme
 import by.niaprauski.designsystem.theme.icons.IIcon
 import by.niaprauski.designsystem.ui.button.PlayerLiteButton
 import by.niaprauski.designsystem.ui.text.TextMedium
 import by.niaprauski.player.models.PAction
+import by.niaprauski.translations.R
 import by.niaprauski.utils.media.ITrackShort
 
 
@@ -80,9 +82,9 @@ fun TrackItem(
 
         PlayerLiteButton(
             modifier = Modifier.size(AppTheme.viewSize.small),
-            imageVector = IIcon.remove,
+            imageVector = IIcon.cancel,
             onClick = handleRemoveClick,
-            description = "Выдаліць трэк з плэйліста",
+            description = stringResource(R.string.feature_player_delete_from_playlist),
         )
     }
 }

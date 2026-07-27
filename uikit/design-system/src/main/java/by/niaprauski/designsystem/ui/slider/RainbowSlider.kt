@@ -115,23 +115,36 @@ fun getColorAtFraction(colors: List<Color>, fraction: Float): Color {
 
 @Stable
 val rainbowBackgroundColors = listOf(
-    Color(0xFF75b18b), //0A1A14
-    Color(0xFF004D40),
+    Color(0xFF75b18b), 
+    Color(0xFF121212),
+    Color(0xFF0D47A1),
     Color(0xFF1A237E),
-    Color(0xFF1A1515),
-    Color(0xFFD9602F),
-    Color(0xFFC5C552),
+    Color(0xFF311B92),
+    Color(0xFF4A148C),
+    Color(0xFF880E4F),
+    Color(0xFFB71C1C),
+    Color(0xFFBF360C),
+    Color(0xFFE65100),
+    Color(0xFFFF8F00),
+    Color(0xFFFBC02D),
+    Color(0xFF827717),
+    Color(0xFF1B5E20),
     Color(0xFFE5E5E1),
 )
 
 val rainbowTextColor = listOf(
     Color(0xFFE5E5E1),
+    Color(0xFF40C4FF),
+    Color(0xFF536DFE),
+    Color(0xFF7C4DFF),
+    Color(0xFFE040FB),
+    Color(0xFFFF4081),
+    Color(0xFFFF5252),
+    Color(0xFFFF6E40),
+    Color(0xFFFFAB40),
+    Color(0xFFFFD740),
+    Color(0xFFFFFF00),
+    Color(0xFFB2FF59),
+    Color(0xFF69F0AE),
     Color(0xFF212121),
-    Color(0xFF657B83),
-    Color(0xFFC5CAE9),
-    Color(0xFF00FFD1),
-    Color(0xFF33691E),
-    Color(0xFFFFD700),
-    Color(0xFFFF9100),
-    Color(0xFF6B093E),
 )

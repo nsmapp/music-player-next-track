@@ -2,6 +2,8 @@ package by.niaprauski.designsystem.theme.icons
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.PlaylistPlay
+import androidx.compose.material.icons.automirrored.rounded.QueueMusic
+import androidx.compose.material.icons.filled.DisabledVisible
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.rounded.Cancel
 import androidx.compose.material.icons.rounded.FavoriteBorder
@@ -36,12 +38,15 @@ object IIcon {
     val skipPrevious = Icons.Rounded.SkipPrevious
     val stop = Icons.Rounded.Stop
     val cancel = Icons.Rounded.Cancel
+
+    val hide = Icons.Default.DisabledVisible
     val reply = Icons.Rounded.Replay
     val search = Icons.Rounded.Search
     val favorite = Icons.Filled.Favorite
     val favoriteBorder = Icons.Rounded.FavoriteBorder
     val library = Icons.Rounded.LibraryMusic
-    val playList = Icons.AutoMirrored.Rounded.PlaylistPlay
+    val playListStartNew = Icons.AutoMirrored.Rounded.PlaylistPlay
+    val playList = Icons.AutoMirrored.Rounded.QueueMusic
     val playListUpdate = Icons.PlaulustUpdate
     val sync = Icons.Rounded.Sync
     val settings = Icons.Rounded.Settings

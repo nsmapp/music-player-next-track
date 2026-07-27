@@ -143,7 +143,7 @@ fun PlayerScreen(
         ModalBottomSheet(
             onDismissRequest = { viewModel.onAction(PAction.HidePlayList) },
             sheetState = rememberModalBottomSheetState(
-                skipPartiallyExpanded = true
+                skipPartiallyExpanded = false,
             ),
             containerColor = AppTheme.appColors.background,
             dragHandle = {

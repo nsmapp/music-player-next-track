@@ -48,7 +48,7 @@ class TrackRepoImpl @Inject constructor(
 
     override fun getPagedFlow(filter: SearchTrackFilter): Flow<PagingData<Track>> =
         Pager(
-            config = PagingConfig(pageSize = 40, prefetchDistance = 10, initialLoadSize = 80, enablePlaceholders = false),
+            config = PagingConfig(pageSize = 80, prefetchDistance = 40, initialLoadSize = 160, enablePlaceholders = false),
             pagingSourceFactory = { trackDao.getPagedFlow(filter.text) }
         ).flow.map { pagingData ->
             pagingData.map { trackMapper.toModel(it) }

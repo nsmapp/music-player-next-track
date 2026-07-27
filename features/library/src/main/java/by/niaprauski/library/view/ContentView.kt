@@ -33,6 +33,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.paging.compose.LazyPagingItems
@@ -58,6 +59,8 @@ fun ContentView(
     isPlaying: () -> Boolean,
     onAction: (LAction) -> Unit,
 ) {
+
+    val keyboardController = LocalSoftwareKeyboardController.current
 
     val hasValidTrack by remember(currentTrackId()) {
         derivedStateOf { currentTrackId() != UNKNOWN_TRACK_ID }
@@ -110,7 +113,8 @@ fun ContentView(
                                 .padding(horizontal = AppTheme.padding.default)
                                 .padding(bottom = AppTheme.padding.micro),
                             horizontalArrangement = Arrangement.spacedBy(AppTheme.padding.mini),
-                            verticalArrangement = Arrangement.spacedBy(AppTheme.padding.micro)
+                            verticalArrangement = Arrangement.spacedBy(AppTheme.padding.micro),
+                            maxLines = 2,
                         ) {
                             state.tags.forEach { tag ->
                                 TextMediumSmall(
@@ -166,8 +170,9 @@ fun ContentView(
                                         .padding(AppTheme.padding.micro)
                                         .clickable {
                                             onAction(LAction.PlayFiltered)
+                                            keyboardController?.hide()
                                         },
-                                    imageVector = IIcon.playListUpdate,
+                                    imageVector = IIcon.playListStartNew,
                                     colorFilter = ColorFilter.tint(AppTheme.appColors.accent),
                                 )
                             }

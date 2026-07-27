@@ -14,7 +14,7 @@ object AppSettingsSerializer : Serializer<AppSettingsEntity> {
         .setIsVisuallyEnabled(false)
         .setMinDuration(20000)
         .setMaxDuration(900000)
-        .setAccentColorHex("#E5E5E1")
+        .setAccentColorHex("#FFE5E5E1")
         .setBackgroundColorHex("#FF75b18b")
         .setAccentPosition(0f)
         .setBackgroundPosition(0f)

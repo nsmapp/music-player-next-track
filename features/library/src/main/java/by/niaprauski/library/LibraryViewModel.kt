@@ -93,6 +93,11 @@ class LibraryViewModel @Inject constructor(
         }
         .cachedIn(viewModelScope)
 
+    init {
+        observeUnanalyzedTrackCount()
+        observeTagSearch()
+    }
+
     private fun observeUnanalyzedTrackCount() {
         viewModelScope.launch {
             getUnanalyzedTrackCountUseCase.invoke()
@@ -121,8 +126,6 @@ class LibraryViewModel @Inject constructor(
 
     fun onCreate() {
         serviceConnection.bind()
-        observeUnanalyzedTrackCount()
-        observeTagSearch()
     }
 
     fun onAction(action: LAction) {

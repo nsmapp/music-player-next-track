@@ -392,7 +392,7 @@ class PlayerService : MediaSessionService() {
                 if (duration <= 0) { // for radio
                     _trackProgress.update { TrackProgress(0f, TEXT_EMPTY) }
                 } else {
-                    val trackTime = (currentPosition / 1000).toTrackTime()
+                    val trackTime = (currentPosition / 1000).toTrackTime(duration)
                     val progress = currentPosition / duration
 
                     _trackProgress.update { TrackProgress(progress, trackTime) }
