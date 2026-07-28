@@ -28,11 +28,11 @@ import by.niaprauski.playerservice.models.ExoPlayerState
 import by.niaprauski.playerservice.models.PlayerServiceAction
 import by.niaprauski.playerservice.models.TrackProgress
 import by.niaprauski.playerservice.models.TrackShort
+import by.niaprauski.playerservice.models.WaveformData
 import by.niaprauski.playerservice.utils.NotificationCreator
 import by.niaprauski.playerservice.utils.SoundProcessor
 import by.niaprauski.playerservice.utils.getMediaItemIndex
 import by.niaprauski.translations.R
-import by.niaprauski.utils.constants.EMPTY_FLOW_ARRAY
 import by.niaprauski.utils.constants.TEXT_EMPTY
 import by.niaprauski.utils.extension.UNKNOWN_TRACK_ID
 import by.niaprauski.utils.extension.fixOldEncoding
@@ -83,7 +83,8 @@ class PlayerService : MediaSessionService() {
 
     private val _trackProgress = MutableStateFlow(TrackProgress.DEFAULT)
     val trackProgress = _trackProgress.asStateFlow()
-    private val _waveform = MutableStateFlow(EMPTY_FLOW_ARRAY)
+
+    private val _waveform = MutableStateFlow<WaveformData>(WaveformData.DEFAULT)
     val waveform = _waveform.asStateFlow()
 
     private val _playList = MutableStateFlow<List<ITrackShort>>(emptyList())

@@ -25,13 +25,13 @@ import by.niaprauski.designsystem.theme.AppTheme
 import by.niaprauski.designsystem.theme.colors.navigationBarItemColors
 import by.niaprauski.designsystem.theme.icons.IIcon
 import by.niaprauski.designsystem.ui.icons.SmallIcon
-import by.niaprauski.navigation.screens.settings.settings
+import by.niaprauski.navigation.screens.about.about
 import by.niaprauski.navigation.screens.library.LibraryDest
 import by.niaprauski.navigation.screens.library.library
 import by.niaprauski.navigation.screens.player.PlayerDest
 import by.niaprauski.navigation.screens.player.player
-import by.niaprauski.navigation.screens.about.about
 import by.niaprauski.navigation.screens.settings.SettingsDest
+import by.niaprauski.navigation.screens.settings.settings
 
 
 @Composable
@@ -67,7 +67,7 @@ fun Root(
                 NavigationBarItem(
                     selected = navigator.currentScreen is PlayerDest,
                     onClick = { navigator.navigateSingleTop(PlayerDest.root())},
-                    icon = { SmallIcon(imageVector = IIcon.play) },
+                    icon = { SmallIcon(imageVector = IIcon.audioTrack) },
                     colors = navigationBarItemColors,
                 )
 

@@ -5,6 +5,7 @@ import androidx.compose.material.icons.automirrored.rounded.PlaylistPlay
 import androidx.compose.material.icons.automirrored.rounded.QueueMusic
 import androidx.compose.material.icons.filled.DisabledVisible
 import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.rounded.Audiotrack
 import androidx.compose.material.icons.rounded.Cancel
 import androidx.compose.material.icons.rounded.FavoriteBorder
 import androidx.compose.material.icons.rounded.LibraryMusic
@@ -29,6 +30,7 @@ import androidx.compose.material.icons.rounded.Sync
 object IIcon {
     val pause = Icons.Rounded.Pause
     val play = Icons.Rounded.PlayArrow
+    val audioTrack = Icons.Rounded.Audiotrack
     val repeat = Icons.Rounded.Repeat
     val repeatOn = Icons.Rounded.RepeatOn
     val repeatOne = Icons.Rounded.RepeatOne

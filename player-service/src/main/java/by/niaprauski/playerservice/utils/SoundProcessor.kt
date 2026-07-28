@@ -3,6 +3,7 @@ package by.niaprauski.playerservice.utils
 import androidx.media3.common.audio.AudioProcessor
 import androidx.media3.common.audio.AudioProcessor.EMPTY_BUFFER
 import androidx.media3.common.util.UnstableApi
+import by.niaprauski.playerservice.models.WaveformData
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -14,7 +15,7 @@ import java.nio.ByteOrder
 @UnstableApi
 class SoundProcessor(
     private val scope: CoroutineScope,
-    private val waveForm: MutableStateFlow<FloatArray>,
+    private val waveForm: MutableStateFlow<WaveformData>,
 ) : AudioProcessor {
 
     private val waveChannel = Channel<FloatArray>(Channel.CONFLATED)
@@ -31,7 +32,7 @@ class SoundProcessor(
     init {
         scope.launch {
             for (array in waveChannel) {
-                waveForm.update { array }
+                waveForm.update { WaveformData(array) }
             }
         }
     }

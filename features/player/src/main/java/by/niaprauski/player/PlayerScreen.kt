@@ -16,8 +16,6 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -35,8 +33,9 @@ import by.niaprauski.player.views.PlayersScreenContent
 import by.niaprauski.player.views.TrackItem
 import by.niaprauski.player.views.dialogs.FirstLaunchDialog
 import by.niaprauski.player.views.dialogs.NeedMediaPermissionDialog
+import by.niaprauski.playerservice.models.TrackProgress
+import by.niaprauski.playerservice.models.WaveformData
 import by.niaprauski.translations.R
-import by.niaprauski.utils.media.ITrackShort
 import by.niaprauski.utils.media.MediaHandler
 import by.niaprauski.utils.messages.showToast
 import by.niaprauski.utils.permission.MediaPermissions
@@ -54,10 +53,9 @@ fun PlayerScreen(
 
     val context = LocalContext.current
     val state: PlayerState by viewModel.state.collectAsStateWithLifecycle()
-    val exoPlayerState by viewModel.exoPlayerState.collectAsStateWithLifecycle()
     val playerService by viewModel.playerService.collectAsStateWithLifecycle()
-    val playList by playerService?.playList?.collectAsStateWithLifecycle(emptyList())
-        ?: remember { mutableStateOf(emptyList<ITrackShort>()) }
+    val trackProgress: TrackProgress by viewModel.trackProgress.collectAsStateWithLifecycle()
+    val waveform: WaveformData by viewModel.waveform.collectAsStateWithLifecycle()
 
     val hasMediaPermission by MediaPermissions.rememberMediaPermissions()
 
@@ -129,10 +127,10 @@ fun PlayerScreen(
         onDismissClick = { viewModel.onAction(PAction.HideMediaPermissionInfoDialog) })
 
     PlayersScreenContent(
-        exoPlayerState = exoPlayerState,
+        exoPlayerState = state.exoPlayerState,
         isVisuallyEnabled = state.isVisuallyEnabled,
-        trackProgress = playerService?.trackProgress,
-        waveformFlow = playerService?.waveform,
+        trackProgress = trackProgress,
+        waveform = waveform,
         isSyncing = state.isSyncing,
         onAction = viewModel::onAction,
         hasMediaPermission = hasMediaPermission,
@@ -162,13 +160,13 @@ fun PlayerScreen(
 
             LazyColumn {
                 items(
-                    count = playList.size,
-                    key = { index -> playList[index].id },
+                    count = state.playList.size,
+                    key = { index -> state.playList[index].id },
                 ) {
                     TrackItem(
-                        track = playList[it],
+                        track = state.playList[it],
                         onAction = viewModel::onAction,
-                        currentTrackId = { exoPlayerState.id }
+                        currentTrackId = { state.exoPlayerState.id }
 
                     )
                 }

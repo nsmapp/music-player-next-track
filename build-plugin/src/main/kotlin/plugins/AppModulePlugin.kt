@@ -11,6 +11,7 @@ import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.dependencies
 import org.gradle.kotlin.dsl.project
 import org.gradle.kotlin.dsl.withType
+import org.jetbrains.kotlin.compose.compiler.gradle.ComposeCompilerGradlePluginExtension
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
@@ -25,6 +26,10 @@ class AppModulePlugin : Plugin<Project> {
                 apply(getLibs().plugins.jetbrains.kotlin.android.get().pluginId)
                 apply(getLibs().plugins.android.hilt.get().pluginId)
                 apply(getLibs().plugins.ksp.gradle.plugin.get().pluginId)
+            }
+
+            extensions.configure<ComposeCompilerGradlePluginExtension> {
+                stabilityConfigurationFile.set(rootProject.layout.projectDirectory.file("compose_stability.conf"))
             }
 
             extensions.configure<ApplicationExtension> {

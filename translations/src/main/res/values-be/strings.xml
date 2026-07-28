@@ -4,7 +4,7 @@
     <string name="app_version">v0.9</string>
 
     <!--    feature player-->
-    <string name="feature_player_welcome_message">Каб сінхранізаваць спіс прайгравання, вам трэба даць доступ да вашых медыяфайлаў.\n\nКалі вы не хочаце даваць праграме доступ да вашых медыяфайлаў, вы можаце прайграць трэк, выбраўшы яго ў файлавым мэнэджары.</string>
+    <string name="feature_player_welcome_message">Каб сфармаваць спіс трэкаў, трэба даць праграме доступ да медыяфайлаў. \n\nГэта неабходна толькі для пошуку музыкі на вашай прыладзе.</string>
     <string name="feature_player_close">Адхіліць</string>
     <string name="feature_player_library">Спіс трэкаў</string>
     <string name="feature_player_sync_playlist">Cінхранізаваць медыя</string>

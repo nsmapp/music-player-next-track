@@ -24,18 +24,22 @@ import by.niaprauski.player.models.SyncTrackStatus
 import by.niaprauski.playerservice.PlayerService
 import by.niaprauski.playerservice.PlayerServiceConnection
 import by.niaprauski.playerservice.models.ExoPlayerState
+import by.niaprauski.playerservice.models.TrackProgress
+import by.niaprauski.playerservice.models.WaveformData
+import by.niaprauski.utils.media.ITrackShort
 import by.niaprauski.utils.media.MediaHandler
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
@@ -46,6 +50,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 
+@OptIn(ExperimentalCoroutinesApi::class)
 @UnstableApi
 @HiltViewModel(assistedFactory = PlayerViewModel.Factory::class)
 class PlayerViewModel @AssistedInject constructor(
@@ -77,16 +82,39 @@ class PlayerViewModel @AssistedInject constructor(
     )
 
     private val _state = MutableStateFlow<PlayerState>(PlayerState.DEFAULT)
-    val state = _state.asStateFlow()
-
     private var appSettings: AppSettings? = null
 
-    val exoPlayerState: StateFlow<ExoPlayerState> = playerService.flatMapLatest { service ->
+    private val exoPlayerState: Flow<ExoPlayerState> = playerService.flatMapLatest { service ->
         service?.state ?: flowOf(ExoPlayerState.DEFAULT)
+    }
+
+    private val playList: Flow<List<ITrackShort>> = playerService.flatMapLatest { service ->
+        service?.playList ?: flowOf(emptyList())
+    }
+
+    val state: StateFlow<PlayerState> =
+        combine(_state, exoPlayerState, playList) { uiState, playerState, tracks ->
+            uiState.copy(exoPlayerState = playerState, playList = tracks)
+        }.stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = PlayerState.DEFAULT
+        )
+
+    val trackProgress: StateFlow<TrackProgress> = playerService.flatMapLatest { service ->
+        service?.trackProgress ?: flowOf(TrackProgress.DEFAULT)
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5000),
-        initialValue = ExoPlayerState.DEFAULT
+        initialValue = TrackProgress.DEFAULT
+    )
+
+    val waveform: StateFlow<WaveformData> = playerService.flatMapLatest { service ->
+        service?.waveform ?: flowOf(WaveformData.DEFAULT)
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = WaveformData.DEFAULT
     )
 
     private val _event by lazy { Channel<PlayerEvent>() }

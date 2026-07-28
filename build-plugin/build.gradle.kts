@@ -1,4 +1,3 @@
-import org.gradle.kotlin.dsl.withType
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
@@ -14,6 +13,7 @@ repositories {
 dependencies {
     implementation(libs.android.lib.gradle.plugin)
     implementation(libs.kotlin.lib.gradle.plugin)
+    implementation(libs.compose.compiler.gradle.plugin)
     implementation(libs.ksp.lib.gradle.plugin)
     implementation(files(libs.javaClass.superclass.protectionDomain.codeSource.location))
 }

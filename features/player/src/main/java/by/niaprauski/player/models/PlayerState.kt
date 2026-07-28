@@ -1,5 +1,7 @@
 package by.niaprauski.player.models
 
+import by.niaprauski.playerservice.models.ExoPlayerState
+import by.niaprauski.utils.media.ITrackShort
 
 data class PlayerState(
     val isShowWelcomeDialog: Boolean,
@@ -8,6 +10,8 @@ data class PlayerState(
     val isVisuallyEnabled: Boolean,
     val isSyncing: Boolean,
     val isShowPlayList: Boolean,
+    val exoPlayerState: ExoPlayerState,
+    val playList: List<ITrackShort>,
 ) {
     companion object {
 
@@ -18,6 +22,8 @@ data class PlayerState(
             isVisuallyEnabled = true,
             isSyncing = false,
             isShowPlayList = false,
+            exoPlayerState = ExoPlayerState.DEFAULT,
+            playList = emptyList(),
         )
     }
 }
