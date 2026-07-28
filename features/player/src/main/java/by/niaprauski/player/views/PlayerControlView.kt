@@ -7,9 +7,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -20,6 +22,7 @@ import by.niaprauski.designsystem.ui.button.PlayerLiteButton
 import by.niaprauski.player.models.PAction
 import by.niaprauski.playerservice.models.RepeatMode
 import by.niaprauski.translations.R
+import kotlinx.coroutines.delay
 
 @Composable
 fun PlayerControlView(
@@ -137,9 +140,18 @@ private fun PlayPauseButton(
     onAction: (PAction) -> Unit,
 ) {
 
-    val playIcon by remember(isPlaying) {
-        derivedStateOf { if (isPlaying) IIcon.pause else IIcon.play }
+    var isPlayingWithDebounce by remember { mutableStateOf(isPlaying) }
+
+    LaunchedEffect(isPlaying) {
+        if (isPlaying) isPlayingWithDebounce = true
+        else {
+            delay(100)
+            isPlayingWithDebounce = isPlaying
+        }
     }
+
+    val playIcon = if (isPlayingWithDebounce) IIcon.pause else IIcon.play
+
 
     PlayerLiteButton(
         modifier = Modifier
@@ -147,7 +159,7 @@ private fun PlayPauseButton(
             .clip(RoundedCornerShape(AppTheme.viewSize.extra_large)),
         imageVector = playIcon,
         onClick = {
-            if (isPlaying) onAction(PAction.Pause) else onAction(PAction.Play)
+            if (isPlayingWithDebounce) onAction(PAction.Pause) else onAction(PAction.Play)
         },
         description = stringResource(R.string.feature_player_play)
     )
