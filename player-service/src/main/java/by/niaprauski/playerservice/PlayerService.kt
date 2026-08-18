@@ -9,6 +9,7 @@ import android.os.Build
 import android.os.IBinder
 import androidx.media3.common.AudioAttributes
 import androidx.media3.common.C
+import androidx.media3.common.ForwardingPlayer
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
 import androidx.media3.common.PlaybackException
@@ -31,6 +32,7 @@ import by.niaprauski.playerservice.models.TrackShort
 import by.niaprauski.playerservice.models.WaveformData
 import by.niaprauski.playerservice.utils.NotificationCreator
 import by.niaprauski.playerservice.utils.SoundProcessor
+import by.niaprauski.playerservice.utils.fix
 import by.niaprauski.playerservice.utils.getMediaItemIndex
 import by.niaprauski.translations.R
 import by.niaprauski.utils.constants.TEXT_EMPTY
@@ -112,8 +114,16 @@ class PlayerService : MediaSessionService() {
                 setAudioAttributes(audioAttributes, true)
                 addAnalyticsListener(EventLogger()) //TODO remove/to debug
             }
-        player?.let { player ->
-            mediaSession = MediaSession.Builder(this, player).build()
+
+        player?.let { exoPlayer ->
+            val forwardingPlayer = object : ForwardingPlayer(exoPlayer) {
+                override fun getMediaMetadata(): MediaMetadata {
+                    val metadata = super.getMediaMetadata()
+                    val fileName = metadata.extras?.getString(TRACK_KEY_FILE_NAME) ?: TEXT_EMPTY
+                    return metadata.fix(fileName)
+                }
+            }
+            mediaSession = MediaSession.Builder(this, forwardingPlayer).build()
         }
 
         observeAppSettings()

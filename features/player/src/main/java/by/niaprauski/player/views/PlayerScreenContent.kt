@@ -92,9 +92,7 @@ fun PlayersScreenContent(
                 )
             }
 
-            if (isVisuallyEnabled) {
-                Spacer(modifier = Modifier.height(AppTheme.padding.large))
-            }
+            Spacer(modifier = Modifier.height(AppTheme.padding.large))
         }
 
         if (isVisuallyEnabled) {
