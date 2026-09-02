@@ -1,7 +1,6 @@
 package by.niaprauski.utils.extension
 
 import java.nio.charset.Charset
-import java.nio.charset.StandardCharsets
 
 fun CharSequence?.orDefault(default: String): String =
     if (this.isNullOrEmpty()) default else this.toString()
@@ -17,30 +16,42 @@ fun CharSequence?.fixOldEncoding(): String? {
     if (this.isNullOrBlank()) return this?.toString()
     val name = this.toString()
 
-    if (name.any { it.code > 255 && it != '\uFFFD' }) return name
-    if (name.all { it.code < 128 }) return name
+    if (name.any { it in '\u0400'..'\u04FF' }) return name
 
     return try {
-        val bytes = name.toByteArray(StandardCharsets.ISO_8859_1)
+        val bytes = name.toByteArray(Charsets.ISO_8859_1)
 
-        val decodedUtf8 = String(bytes, StandardCharsets.UTF_8)
-        if (
-            !decodedUtf8.contains('\uFFFD')
-            && decodedUtf8.any { it.code > 127 }
-        ) return decodedUtf8
+        val utf8 = String(bytes, Charsets.UTF_8)
+        if (!utf8.contains('\uFFFD') && utf8.any { it.code > 127 }) return utf8
 
-        val charsets = listOf("Windows-1251", "Windows-1250", "KOI8-R")
-        for (name in charsets) {
-            try {
-                val decoded = String(bytes, Charset.forName(name))
-                if (decoded.count { it.isLetter() } >= (name.length * 0.5)) {
-                    return decoded
-                }
-            } catch (e: Exception) {
+        val win1251 = String(bytes, Charset.forName("Windows-1251"))
+
+        if (win1251.any { it in '\u0400'..'\u04FF' }) {
+            val hasControlChars = name.any { it.code in 128..159 }
+            if (hasControlChars || !win1251.isMixedLatinCyrillic()) {
+                return win1251
             }
         }
+
         name
     } catch (e: Exception) {
         name
     }
 }
+
+private fun String.isMixedLatinCyrillic(): Boolean {
+    var hasLat = false
+    var hasCyr = false
+    for (c in this) {
+        if (c in 'a'..'z' || c in 'A'..'Z') hasLat = true
+        else if (c in '\u0400'..'\u04FF') hasCyr = true
+        else if (!c.isLetter()) {
+            if (hasLat && hasCyr) return true
+            hasLat = false
+            hasCyr = false
+        }
+        if (hasLat && hasCyr) return true
+    }
+    return hasLat && hasCyr
+}
+
