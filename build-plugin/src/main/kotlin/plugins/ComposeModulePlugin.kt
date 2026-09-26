@@ -17,7 +17,9 @@ class ComposeModulePlugin: Plugin<Project> {
             }
 
             extensions.configure(ComposeCompilerGradlePluginExtension::class.java) {
-                stabilityConfigurationFile.set(rootProject.layout.projectDirectory.file("compose_stability.conf"))
+                stabilityConfigurationFiles.addAll(
+                    project.layout.projectDirectory.file("stability_config.conf")
+                )
             }
         }
     }

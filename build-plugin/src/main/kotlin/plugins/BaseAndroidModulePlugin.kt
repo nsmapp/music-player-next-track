@@ -8,18 +8,12 @@ import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.dependencies
-import org.gradle.kotlin.dsl.withType
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 class BaseAndroidModulePlugin : Plugin<Project> {
 
     override fun apply(target: Project) {
 
         with(target) {
-            with(pluginManager) {
-                apply(getLibs().plugins.jetbrains.kotlin.android.get().pluginId)
-            }
 
             extensions.configure<LibraryExtension> {
 
@@ -46,15 +40,10 @@ class BaseAndroidModulePlugin : Plugin<Project> {
                 }
 
                 compileOptions {
-                    sourceCompatibility = JavaVersion.VERSION_11
-                    targetCompatibility = JavaVersion.VERSION_11
+                    sourceCompatibility = JavaVersion.toVersion(getLibs().versions.javaVersion.get())
+                    targetCompatibility = JavaVersion.toVersion(getLibs().versions.javaVersion.get())
                 }
 
-                tasks.withType<KotlinCompile>().configureEach {
-                    compilerOptions {
-                        jvmTarget.set(JvmTarget.JVM_11)
-                    }
-                }
 
                 dependencies {
                     implementation(getLibs().androidx.core.ktx)

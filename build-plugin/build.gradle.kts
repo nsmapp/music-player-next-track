@@ -1,3 +1,4 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
@@ -18,15 +19,11 @@ dependencies {
     implementation(files(libs.javaClass.superclass.protectionDomain.codeSource.location))
 }
 
-//TODO change version
-java {
-    sourceCompatibility = JavaVersion.VERSION_11
-    targetCompatibility = JavaVersion.VERSION_11
-}
+
 
 tasks.withType<KotlinCompile>().configureEach {
     compilerOptions {
-        jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_11
+        jvmTarget.set(JvmTarget.fromTarget(libs.versions.javaVersion.get()))
     }
 }
 
@@ -52,6 +49,11 @@ gradlePlugin {
         register("plugin.app.module") {
             id = "plugin.app.module"
             implementationClass = "plugins.AppModulePlugin"
+        }
+
+        register("plugin.tests"){
+            id = "plugin.tests"
+            implementationClass = "plugins.TestsPlugin"
         }
     }
 }

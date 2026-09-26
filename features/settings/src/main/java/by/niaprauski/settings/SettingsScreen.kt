@@ -18,7 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import by.niaprauski.designsystem.theme.AppTheme
 import by.niaprauski.designsystem.theme.dimens.defaultRoundedShape
@@ -48,7 +48,7 @@ fun SettingsScreen(
     SettingsScreenContent(
         state = state,
         onNavigateToAbout = onNavigateToAbout,
-        onAction = viewModel::onAction
+        onAction = { viewModel.onAction(it) }
     )
 }
 

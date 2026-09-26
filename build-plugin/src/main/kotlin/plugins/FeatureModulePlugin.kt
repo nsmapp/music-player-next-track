@@ -6,7 +6,6 @@ import ext.ksp
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.dependencies
-import org.gradle.kotlin.dsl.project
 
 class FeatureModulePlugin: Plugin<Project> {
 
@@ -16,7 +15,6 @@ class FeatureModulePlugin: Plugin<Project> {
             with(pluginManager){
                 apply(getLibs().plugins.android.library.get().pluginId)
                 apply("plugin.compose.module")
-                apply(getLibs().plugins.jetbrains.kotlin.android.get().pluginId)
                 apply(getLibs().plugins.android.hilt.get().pluginId)
                 apply(getLibs().plugins.ksp.gradle.plugin.get().pluginId)
             }

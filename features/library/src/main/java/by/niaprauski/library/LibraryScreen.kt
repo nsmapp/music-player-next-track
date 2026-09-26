@@ -27,7 +27,7 @@ import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.media3.common.util.UnstableApi
 import androidx.paging.LoadState
@@ -125,7 +125,7 @@ fun LibraryScreen(
                     currentTrackId = { exoPlayerState.id },
                     currentTrackName = { exoPlayerState.fileName },
                     isPlaying = {exoPlayerState.isPlaying},
-                    onAction = viewModel::onAction
+                    onAction = { viewModel.onAction(it) }
 
                 )
             }

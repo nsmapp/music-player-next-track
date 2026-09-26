@@ -269,6 +269,9 @@ class PlayerService : MediaSessionService() {
     fun stop() {
         player?.pause()
         player?.seekTo(0)
+        serviceScope.launch {
+            _trackProgress.update { TrackProgress.DEFAULT }
+        }
     }
 
     fun seekToNext() {

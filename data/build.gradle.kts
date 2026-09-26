@@ -3,7 +3,7 @@ plugins {
     id("plugin.android.module")
     alias(libs.plugins.ksp.gradle.plugin)
     alias(libs.plugins.android.hilt)
-    id("com.google.protobuf") version "0.9.4"
+    id("com.google.protobuf") version "0.10.0"
 }
 
 android {

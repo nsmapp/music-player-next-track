@@ -1,16 +1,14 @@
+import ext.getLibs
+
 plugins {
     id("java-library")
+    id("plugin.tests")
     alias(libs.plugins.jetbrains.kotlin.jvm)
     alias(libs.plugins.ksp.gradle.plugin)
 }
 java {
-    sourceCompatibility = JavaVersion.VERSION_11
-    targetCompatibility = JavaVersion.VERSION_11
-}
-kotlin {
-    compilerOptions {
-        jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_11
-    }
+    sourceCompatibility = JavaVersion.toVersion(getLibs().versions.javaVersion.get())
+    targetCompatibility = JavaVersion.toVersion(getLibs().versions.javaVersion.get())
 }
 
 dependencies{

@@ -19,8 +19,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.stringResource
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.media3.common.util.UnstableApi
 import by.niaprauski.designsystem.theme.AppTheme
@@ -52,6 +53,7 @@ fun PlayerScreen(
     }
 
     val context = LocalContext.current
+    val resources = LocalResources.current
     val state: PlayerState by viewModel.state.collectAsStateWithLifecycle()
     val playerService by viewModel.playerService.collectAsStateWithLifecycle()
     val trackProgress: TrackProgress by viewModel.trackProgress.collectAsStateWithLifecycle()
@@ -98,13 +100,13 @@ fun PlayerScreen(
                 is PlayerEvent.PlayTrackFromPlayList -> playerService?.playTrackFromPlayList(event.trackId)
 
                 PlayerEvent.MediaItemSynced ->
-                    context.showToast(context.getString(R.string.feature_player_sync_complete))
+                    context.showToast(resources.getString(R.string.feature_player_sync_complete))
 
                 PlayerEvent.MediaItemSyncError ->
-                    context.showToast(context.getString(R.string.feature_player_synchronization_failed))
+                    context.showToast(resources.getString(R.string.feature_player_synchronization_failed))
 
                 PlayerEvent.PlaylistChanged ->
-                    context.showToast(context.getString(R.string.feature_player_new_playlist_created))
+                    context.showToast(resources.getString(R.string.feature_player_new_playlist_created))
 
                 PlayerEvent.Nothing -> {
                     /**do nothing **/
@@ -132,7 +134,7 @@ fun PlayerScreen(
         trackProgress = trackProgress,
         waveform = waveform,
         isSyncing = state.isSyncing,
-        onAction = viewModel::onAction,
+        onAction = { viewModel.onAction(it) },
         hasMediaPermission = hasMediaPermission,
     )
 
@@ -165,7 +167,7 @@ fun PlayerScreen(
                 ) {
                     TrackItem(
                         track = state.playList[it],
-                        onAction = viewModel::onAction,
+                        onAction = { action -> viewModel.onAction(action) },
                         currentTrackId = { state.exoPlayerState.id }
 
                     )

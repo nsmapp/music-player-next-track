@@ -9,11 +9,7 @@ import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.dependencies
-import org.gradle.kotlin.dsl.project
-import org.gradle.kotlin.dsl.withType
 import org.jetbrains.kotlin.compose.compiler.gradle.ComposeCompilerGradlePluginExtension
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 class AppModulePlugin : Plugin<Project> {
 
@@ -23,18 +19,23 @@ class AppModulePlugin : Plugin<Project> {
             with(pluginManager) {
                 apply(getLibs().plugins.android.application.get().pluginId)
                 apply(getLibs().plugins.compose.compiler.get().pluginId)
-                apply(getLibs().plugins.jetbrains.kotlin.android.get().pluginId)
                 apply(getLibs().plugins.android.hilt.get().pluginId)
                 apply(getLibs().plugins.ksp.gradle.plugin.get().pluginId)
             }
 
             extensions.configure<ComposeCompilerGradlePluginExtension> {
-                stabilityConfigurationFile.set(rootProject.layout.projectDirectory.file("compose_stability.conf"))
+                stabilityConfigurationFiles.addAll(
+                    project.layout.projectDirectory.file("stability_config.conf")
+                )
             }
 
             extensions.configure<ApplicationExtension> {
 
                 compileSdk = getLibs().versions.compileSDk.get().toInt()
+
+                buildFeatures {
+                    resValues = true
+                }
 
                 defaultConfig {
                     applicationId = "by.niaprauski.nt"
@@ -68,15 +69,10 @@ class AppModulePlugin : Plugin<Project> {
                 }
 
                 compileOptions {
-                    sourceCompatibility = JavaVersion.VERSION_11
-                    targetCompatibility = JavaVersion.VERSION_11
+                    sourceCompatibility = JavaVersion.toVersion(getLibs().versions.javaVersion.get())
+                    targetCompatibility = JavaVersion.toVersion(getLibs().versions.javaVersion.get())
                 }
 
-                tasks.withType<KotlinCompile>().configureEach {
-                    compilerOptions {
-                        jvmTarget.set(JvmTarget.JVM_11)
-                    }
-                }
 
                 dependencies {
                     implementation(getLibs().androidx.core.ktx)
