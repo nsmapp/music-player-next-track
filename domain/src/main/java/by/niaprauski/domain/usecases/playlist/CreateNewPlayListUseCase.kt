@@ -1,21 +1,24 @@
-package by.niaprauski.domain.usecases.track
+package by.niaprauski.domain.usecases.playlist
 
+import by.niaprauski.domain.models.playlist.toPlayListTrack
 import by.niaprauski.domain.models.settings.PlayListConfig
 import by.niaprauski.domain.models.track.Track
 import by.niaprauski.domain.models.track.TrackIds
+import by.niaprauski.domain.repository.PlayListRepository
 import by.niaprauski.domain.repository.SettingsRepository
 import by.niaprauski.domain.repository.TrackRepository
 import by.niaprauski.domain.utils.DispatcherProvider
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-class GetTracksForPlayUseCase @Inject constructor(
+class CreateNewPlayListUseCase @Inject constructor(
     private val settingsRepository: SettingsRepository,
     private val trackRepository: TrackRepository,
+    private val playListRepository: PlayListRepository,
     private val dispatcherProvider: DispatcherProvider,
 ) {
 
-    suspend fun invoke(): Result<List<Track>> =
+    suspend operator fun invoke(): Result<List<Track>> =
         withContext(dispatcherProvider.io) {
             runCatching {
                 val settings = settingsRepository.get()
@@ -37,10 +40,14 @@ class GetTracksForPlayUseCase @Inject constructor(
                         likeTrackPercent = likeTrackPercent,
                         trackIds = trackIds
                     )
+
                     else -> trackIds.all.shuffled().take(limit)
                 }
 
-                trackRepository.getByIds(playListIds).shuffled()
+                val playList = trackRepository.getByIds(playListIds).shuffled()
+                playListRepository.overrideAll(playList.map { it.toPlayListTrack() })
+
+                playList
             }
         }
 

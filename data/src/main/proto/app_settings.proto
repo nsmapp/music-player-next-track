@@ -16,4 +16,5 @@ message AppSettingsEntity {
     bool is_like_track_priority = 11;
     int32 liked_track_percent = 12;
     bool is_auto_play_on_start= 13;
+    bool is_save_play_list = 14;
 }

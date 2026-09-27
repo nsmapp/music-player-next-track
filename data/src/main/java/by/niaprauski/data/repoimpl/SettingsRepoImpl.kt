@@ -112,4 +112,12 @@ class SettingsRepoImpl @Inject constructor(
         }
     }
 
+    override suspend fun setSavePlayList(isSavePlayList: Boolean) {
+        store.updateData { currentSettings ->
+            currentSettings.toBuilder()
+                .setIsSavePlayList(isSavePlayList)
+                .build()
+        }
+    }
+
 }

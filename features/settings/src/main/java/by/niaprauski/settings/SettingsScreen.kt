@@ -35,7 +35,7 @@ import by.niaprauski.translations.R
 @Composable
 fun SettingsScreen(
     onNavigateToAbout: () -> Unit,
-    viewModel: SettingsViewModel = hiltViewModel()
+    viewModel: SettingsViewModel = hiltViewModel(),
 ) {
 
     LaunchedEffect(Unit) {
@@ -46,17 +46,14 @@ fun SettingsScreen(
 
 
     SettingsScreenContent(
-        state = state,
-        onNavigateToAbout = onNavigateToAbout,
-        onAction = { viewModel.onAction(it) }
-    )
+        state = state, onNavigateToAbout = onNavigateToAbout, onAction = { viewModel.onAction(it) })
 }
 
 @Composable
 private fun SettingsScreenContent(
     state: SettingsState,
     onNavigateToAbout: () -> Unit = {},
-    onAction: (SAction) -> Unit
+    onAction: (SAction) -> Unit,
 ) {
     Column(
         modifier = Modifier
@@ -81,9 +78,11 @@ private fun SettingsScreenContent(
                 isPlayListLimitError = state.isPlayListLimitError,
                 isLikeTrackPriority = state.isLikeTrackPriority,
                 isAutoPlayAfterLaunch = state.isAutoPlay,
+                isSaveLastPlayList = state.isSaveLastPlayList,
                 onLimitTrackChanged = { count -> onAction(SAction.SetPlayListLimitSize(count)) },
                 onLikedTrackChanged = { percent -> onAction(SAction.SetLikedTrackPercent(percent)) },
                 onAutoPlayChanged = { enabled -> onAction(SAction.SetAutoPlay(enabled)) },
+                onSavePlayListChanged = { enabled -> onAction(SAction.SetSavePlayList(enabled)) },
                 onAddLikeTrackInPlayList = { isLikeTrackPriority ->
                     onAction(
                         SAction.SetLikeTrackPriority(
@@ -109,13 +108,11 @@ private fun SettingsScreenContent(
                 onBackgroundColorChanged = { hex, pos ->
                     onAction(
                         SAction.SetBackgroundColor(
-                            hex,
-                            pos
+                            hex, pos
                         )
                     )
                 },
-                onVisuallyChanged = { enabled -> onAction(SAction.SetVisuallyEnabled(enabled)) }
-            )
+                onVisuallyChanged = { enabled -> onAction(SAction.SetVisuallyEnabled(enabled)) })
         }
 
         FlipperView(
@@ -144,8 +141,7 @@ private fun SettingsScreenContent(
                 .clip(defaultRoundedShape)
                 .clickable {
                     onNavigateToAbout()
-                },
-            text = stringResource(R.string.feature_settings_about_app)
+                }, text = stringResource(R.string.feature_settings_about_app)
         )
 
     }

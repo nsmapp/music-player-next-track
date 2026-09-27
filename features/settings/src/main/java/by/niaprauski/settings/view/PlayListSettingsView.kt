@@ -20,9 +20,11 @@ fun PlayListSettingsView(
     isPlayListLimitError: Boolean,
     isLikeTrackPriority: Boolean,
     isAutoPlayAfterLaunch: Boolean,
+    isSaveLastPlayList: Boolean,
     onLimitTrackChanged: (String) -> Unit,
     onLikedTrackChanged: (String) -> Unit,
     onAutoPlayChanged: (Boolean) -> Unit,
+    onSavePlayListChanged: (Boolean) -> Unit,
     onAddLikeTrackInPlayList: (Boolean) -> Unit,
 ) {
 
@@ -34,6 +36,16 @@ fun PlayListSettingsView(
         isChecked = isAutoPlayAfterLaunch,
         label = stringResource(R.string.feature_settings_autoplay_after_launch),
         onCheckedChange = onAutoPlayChanged,
+    )
+
+    SwitchRow(
+        modifier = Modifier
+            .fillMaxWidth()
+            .wrapContentHeight()
+            .padding(AppTheme.padding.mini),
+        isChecked = isSaveLastPlayList,
+        label = stringResource(R.string.feature_settings_save_play_list),
+        onCheckedChange = onSavePlayListChanged,
     )
 
     TextFieldRow(

@@ -55,6 +55,7 @@
     <string name="feature_settings_about_app">About app</string>
     <string name="feature_settings_liked_track_in_playlist">Liked track in playlist, %</string>
     <string name="feature_settings_autoplay_after_launch">Autoplay after launch</string>
+    <string name="feature_settings_save_play_list">Restore last playlist</string>
 
     <!--    feature about-->
     <string name="feature_about_application_description">A simple music and online radio player — just hit “Play”.\n\nIf you have any suggestions or found a bug, feel free to reach out.</string>

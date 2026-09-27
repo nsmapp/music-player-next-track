@@ -12,6 +12,7 @@ import by.niaprauski.domain.usecases.settings.SetLikedTrackPercentInPlayListUseC
 import by.niaprauski.domain.usecases.settings.SetMaxTrackDurationUseCase
 import by.niaprauski.domain.usecases.settings.SetMinTrackDurationUseCase
 import by.niaprauski.domain.usecases.settings.SetPlayListLimitSizeUseCase
+import by.niaprauski.domain.usecases.settings.SetSaveLastPlayListUseCase
 import by.niaprauski.domain.usecases.settings.SetVisualizerStatusUseCase
 import by.niaprauski.settings.models.SAction
 import by.niaprauski.settings.models.SettingsState
@@ -38,6 +39,7 @@ class SettingsViewModel @Inject constructor(
     private val setLikeTrackPriorityUseCase: SetLikeTrackPriorityUseCase,
     private val setLikedTrackPercentUseCase: SetLikedTrackPercentInPlayListUseCase,
     private val setAutoPlayAfterLaunchUseCase: SetAutoPlayAfterLaunchUseCase,
+    private val setSaveLastPlayListUseCase: SetSaveLastPlayListUseCase,
 ) : ViewModel() {
 
     companion object {
@@ -75,6 +77,7 @@ class SettingsViewModel @Inject constructor(
             is SAction.SetLikeTrackPriority -> setLikeTrackPriority(action.isLikeTrackPriority)
             is SAction.SetLikedTrackPercent -> setLikedTrackPercent(action.percent)
             is SAction.SetAutoPlay -> setAutoPlayAfterLaunch(action.enabled)
+            is SAction.SetSavePlayList -> setSaveLastPlayList(action.enabled)
         }
     }
 
@@ -103,7 +106,8 @@ class SettingsViewModel @Inject constructor(
                     isPlayListLimitError = false,
                     playListLimitSize = playListLimitSize.toString(),
                     isLikeTrackPriority = isLikeTrackPriority,
-                    isAutoPlay = isAutoPlayOnLaunch
+                    isAutoPlay = isAutoPlayOnLaunch,
+                    isSaveLastPlayList = isSaveLastPlayList,
                 )
             }
         }
@@ -283,6 +287,13 @@ class SettingsViewModel @Inject constructor(
         viewModelScope.launch {
             setAutoPlayAfterLaunchUseCase.invoke(enabled)
                 .onComplete { _state.update { it.copy(isAutoPlay = enabled) } }
+        }
+    }
+
+    private fun setSaveLastPlayList(enabled: Boolean) {
+        viewModelScope.launch {
+            setSaveLastPlayListUseCase.invoke(enabled)
+                .onComplete { _state.update { it.copy(isSaveLastPlayList = enabled) } }
         }
     }
 

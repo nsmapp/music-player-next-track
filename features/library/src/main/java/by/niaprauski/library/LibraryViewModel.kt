@@ -7,11 +7,14 @@ import androidx.media3.common.util.UnstableApi
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.map
+import by.niaprauski.domain.models.playlist.PlayListTrack
 import by.niaprauski.domain.models.search.SearchTrackFilter
 import by.niaprauski.domain.models.tag.Tag
+import by.niaprauski.domain.usecases.playlist.AddTrackToPlayListUseCase
+import by.niaprauski.domain.usecases.playlist.CreateFilteredPlayListUseCase
+import by.niaprauski.domain.usecases.playlist.RemoveFromPlayListUseCase
 import by.niaprauski.domain.usecases.tag.GetTracksByTagUseCase
 import by.niaprauski.domain.usecases.tag.SearchTagUseCase
-import by.niaprauski.domain.usecases.track.GetFilteredTracksForPlayUseCase
 import by.niaprauski.domain.usecases.track.GetTracksPagedUseCase
 import by.niaprauski.domain.usecases.track.GetUnanalyzedTrackCountUseCase
 import by.niaprauski.domain.usecases.track.MarkTrackAsIgnoredUseCase
@@ -50,9 +53,11 @@ class LibraryViewModel @Inject constructor(
     private val getTrackPagedUseCase: GetTracksPagedUseCase,
     private val markTrackAsIgnoredUseCase: MarkTrackAsIgnoredUseCase,
     private val unmarkTrackAsIgnoredUseCase: UnmarkTrackAsIgnoredUseCase,
-    private val getFilteredTracksForPlayUseCase: GetFilteredTracksForPlayUseCase,
+    private val createFilteredPlayListUseCase: CreateFilteredPlayListUseCase,
     private val getUnanalyzedTrackCountUseCase: GetUnanalyzedTrackCountUseCase,
     private val getTracksByTagUseCase: GetTracksByTagUseCase,
+    private val addTrackToPlayListUseCase: AddTrackToPlayListUseCase,
+    private val removeFromPlayListUseCase: RemoveFromPlayListUseCase,
     private val searchTagUseCase: SearchTagUseCase,
     private val trackModelMapper: TrackModelMapper,
 ) : ViewModel() {
@@ -110,9 +115,9 @@ class LibraryViewModel @Inject constructor(
     private fun observeTagSearch() {
         viewModelScope.launch {
             _searchFlow.collectLatest { filter ->
-                when{
+                when {
                     filter.text.isBlank() -> _state.update { it.copy(tags = emptyList()) }
-                    !filter.isTag ->{
+                    !filter.isTag -> {
                         delay(DEBOUNCE_SEARCH_INPUT)
                         searchTagUseCase.invoke(filter.text)
                             .onSuccess { tags ->
@@ -143,7 +148,7 @@ class LibraryViewModel @Inject constructor(
 
     private fun playFiltered() {
         viewModelScope.launch {
-            getFilteredTracksForPlayUseCase.invoke(_searchFlow.value)
+            createFilteredPlayListUseCase.invoke(_searchFlow.value)
                 .onSuccess { tracks ->
                     val mediaItems = tracks.map { track -> trackModelMapper.toMediaItem(track) }
                     _event.send(LibraryEvent.PlayMediaItems(mediaItems))
@@ -173,7 +178,7 @@ class LibraryViewModel @Inject constructor(
                 .onSuccess {
                     val mediaItem = trackModelMapper.toMediaItem(track)
                     sendEvent(LibraryEvent.IgnoreMediaItem(mediaItem))
-
+                    removeFromPlayList(track)
                 }
         }
     }
@@ -192,6 +197,7 @@ class LibraryViewModel @Inject constructor(
     private fun playTrack(track: TrackModel) {
         val mediaItem = trackModelMapper.toMediaItem(track)
         sendEvent(LibraryEvent.PlayMediaItem(mediaItem))
+        addTrackToPlayList(track)
     }
 
     private fun search(text: String) {
@@ -209,6 +215,16 @@ class LibraryViewModel @Inject constructor(
         viewModelScope.launch {
             sendEvent(LibraryEvent.Pause)
         }
+    }
+
+    private fun addTrackToPlayList(track: TrackModel) {
+        viewModelScope.launch {
+            addTrackToPlayListUseCase.invoke(PlayListTrack(track.id))
+        }
+    }
+
+    private suspend fun removeFromPlayList(track: TrackModel) {
+        removeFromPlayListUseCase.invoke(PlayListTrack(track.id))
     }
 
     override fun onCleared() {

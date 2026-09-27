@@ -53,6 +53,7 @@
     <string name="feature_settings_about_app">Пра дадатак</string>
     <string name="feature_settings_liked_track_in_playlist">Абранае любімых трэкаў, %</string>
     <string name="feature_settings_autoplay_after_launch">Аўтапрайграванне пасля запуску</string>
+    <string name="feature_settings_save_play_list">Аднаўляць апошні плэйліст</string>
 
     <!--    feature about-->
     <string name="feature_about_application_description">Просты дадатак для праслухоўвання музыкі і онлайн-радыё — проста націсніце «Play».\n\nКалі ў вас ёсць ідэі па паляпшэнні або вы знайшлі памылку, калі ласка, звяжыцеся са мной.</string>

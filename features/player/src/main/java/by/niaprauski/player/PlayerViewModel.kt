@@ -8,13 +8,16 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.media3.common.MediaItem
 import androidx.media3.common.util.UnstableApi
+import by.niaprauski.domain.models.playlist.PlayListTrack
 import by.niaprauski.domain.models.settings.AppSettings
 import by.niaprauski.domain.models.track.Track
+import by.niaprauski.domain.usecases.playlist.CreateNewPlayListUseCase
+import by.niaprauski.domain.usecases.playlist.LoadPlayListUseCase
+import by.niaprauski.domain.usecases.playlist.RemoveFromPlayListUseCase
 import by.niaprauski.domain.usecases.settings.GetSettingsFlowUseCase
 import by.niaprauski.domain.usecases.settings.SetWelcomeMessageStatusUseCase
 import by.niaprauski.domain.usecases.track.ChangeTrackFavoriteUseCase
 import by.niaprauski.domain.usecases.track.FilterAndSaveTracksUseCase
-import by.niaprauski.domain.usecases.track.GetTracksForPlayUseCase
 import by.niaprauski.domain.usecases.track.SetTrackFavoriteUpUseCase
 import by.niaprauski.player.mapper.TrackModelMapper
 import by.niaprauski.player.models.PAction
@@ -58,11 +61,13 @@ class PlayerViewModel @AssistedInject constructor(
     @Assisted("singleAudioTrack") val singleAudioTrack: Uri? = null,
     private val application: Application,
     private val filterAndSaveTracksUseCase: FilterAndSaveTracksUseCase,
-    private val getTracksForPlayUseCase: GetTracksForPlayUseCase,
+    private val createNewPlayListUseCase: CreateNewPlayListUseCase,
+    private val loadPlayListUseCase: LoadPlayListUseCase,
     private val getSettingsFlowUseCase: GetSettingsFlowUseCase,
     private val setWelcomeMessageStatusUseCase: SetWelcomeMessageStatusUseCase,
     private val setTrackFavoriteUpUseCase: SetTrackFavoriteUpUseCase,
     private val changeTrackFavoriteUseCase: ChangeTrackFavoriteUseCase,
+    private val removeFromPlayListUseCase: RemoveFromPlayListUseCase,
     private val trackModelMapper: TrackModelMapper,
 ) : ViewModel() {
 
@@ -123,10 +128,12 @@ class PlayerViewModel @AssistedInject constructor(
     private fun playInitialTrack() {
         viewModelScope.launch {
             playerService.filterNotNull().first()
+            val isSaveLastPlayList = getSettingsFlowUseCase().first().isSaveLastPlayList
             when {
-                radioTrack == null && singleAudioTrack == null -> loadTracks()
                 radioTrack != null -> playRadioTrack(radioTrack)
                 singleAudioTrack != null -> playSingleAudioTrack(singleAudioTrack)
+                isSaveLastPlayList -> loadPlayList()
+                else -> createNewPlayList()
             }
         }
     }
@@ -158,7 +165,7 @@ class PlayerViewModel @AssistedInject constructor(
             is PAction.HideMediaPermissionInfoDialog -> hideMediaPermissionInfoDialog()
             is PAction.ShowPlayList -> showPlayList()
             is PAction.HidePlayList -> hidePlayList()
-            is PAction.ReloadPlayList -> reloadPlayList()
+            is PAction.ReloadPlayList -> createNewPlayList()
             is PAction.SeekTo -> seekTo(action.position)
             is PAction.UpTrackFavorite -> upTrackFavorite(action.trackId)
             is PAction.ChangeTrackFavorite -> changeTrackFavorite(action.trackId)
@@ -168,9 +175,9 @@ class PlayerViewModel @AssistedInject constructor(
         }
     }
 
-    private fun loadTracks() {
+    private fun loadPlayList() {
         viewModelScope.launch {
-            getTracksForPlayUseCase.invoke()
+            loadPlayListUseCase.invoke()
                 .onSuccess { items ->
                     handleSuccessLoadTracks(items)
                 }
@@ -181,6 +188,11 @@ class PlayerViewModel @AssistedInject constructor(
     }
 
     private suspend fun handleSuccessLoadTracks(items: List<Track>) {
+        if (items.isEmpty()){
+            createNewPlayList()
+            return
+        }
+
         setPlayList(trackModelMapper.toMediaItems(items))
         appSettings?.isAutoPlayOnLaunch?.let { isAutoPlay ->
             if (isAutoPlay) _event.send(PlayerEvent.Play)
@@ -216,7 +228,7 @@ class PlayerViewModel @AssistedInject constructor(
     }
 
     private fun handleSyncedTracks() {
-        if (_state.value.trackCount == 0) loadTracks()
+        if (_state.value.trackCount == 0) createNewPlayList()
     }
 
     private fun play() {
@@ -350,6 +362,7 @@ class PlayerViewModel @AssistedInject constructor(
     private fun removeTrackFromPlayList(trackId: String) {
         viewModelScope.launch {
             _event.send(PlayerEvent.RemoveTrackFromPlayList(trackId))
+            removeFromPlayListUseCase.invoke(PlayListTrack(trackId))
         }
     }
 
@@ -359,9 +372,9 @@ class PlayerViewModel @AssistedInject constructor(
         }
     }
 
-    private fun reloadPlayList() {
+    private fun createNewPlayList() {
         viewModelScope.launch {
-            getTracksForPlayUseCase.invoke()
+            createNewPlayListUseCase.invoke()
                 .onSuccess { items ->
                     setPlayList(trackModelMapper.toMediaItems(items))
                     _event.send(PlayerEvent.PlaylistChanged)

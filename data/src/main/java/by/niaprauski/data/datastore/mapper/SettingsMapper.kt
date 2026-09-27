@@ -21,6 +21,7 @@ class SettingsMapper @Inject constructor() {
                 isLikeTrackPriority = isLikeTrackPriority,
                 likedTrackPercent = likedTrackPercent,
                 isAutoPlayOnLaunch = isAutoPlayOnStart,
+                isSaveLastPlayList = isSavePlayList,
             )
         }
     }

@@ -1,8 +1,10 @@
 package by.niaprauski.nt.di
 
+import by.niaprauski.data.repoimpl.PlayListRepoImpl
 import by.niaprauski.data.repoimpl.SettingsRepoImpl
 import by.niaprauski.data.repoimpl.TagRepoImpl
 import by.niaprauski.data.repoimpl.TrackRepoImpl
+import by.niaprauski.domain.repository.PlayListRepository
 import by.niaprauski.domain.repository.SettingsRepository
 import by.niaprauski.domain.repository.TagRepository
 import by.niaprauski.domain.repository.TrackRepository
@@ -17,17 +19,21 @@ abstract class RepositoryModule {
 
     @Binds
     abstract fun bindTrackRepository(
-        trackRepoImpl: TrackRepoImpl
+        trackRepoImpl: TrackRepoImpl,
     ): TrackRepository
 
     @Binds
     abstract fun bindSettingsRepository(
-        settingsRepoImpl: SettingsRepoImpl
+        settingsRepoImpl: SettingsRepoImpl,
     ): SettingsRepository
 
     @Binds
     abstract fun bindTagRepository(
-        tagRepoImpl: TagRepoImpl
+        tagRepoImpl: TagRepoImpl,
     ): TagRepository
 
+    @Binds
+    abstract fun bindPlayListRepository(
+        playListRepoImpl: PlayListRepoImpl,
+    ): PlayListRepository
 }

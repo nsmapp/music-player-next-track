@@ -13,4 +13,5 @@ data class AppSettings(
     val isLikeTrackPriority: Boolean,
     val likedTrackPercent: Int,
     val isAutoPlayOnLaunch: Boolean,
+    val isSaveLastPlayList: Boolean,
 )

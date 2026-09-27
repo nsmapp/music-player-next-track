@@ -11,4 +11,5 @@ sealed class SAction {
     data class SetLikeTrackPriority(val isLikeTrackPriority: Boolean) : SAction()
     data class SetLikedTrackPercent(val percent: String): SAction()
     data class SetAutoPlay(val enabled: Boolean) : SAction()
+    data class SetSavePlayList(val enabled: Boolean) : SAction()
 }

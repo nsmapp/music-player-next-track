@@ -2,6 +2,7 @@ package by.niaprauski.nt.di
 
 import android.content.Context
 import by.niaprauski.data.database.AppDatabase
+import by.niaprauski.data.database.dao.PlayListDao
 import by.niaprauski.data.database.dao.TagDao
 import by.niaprauski.data.database.dao.TrackDao
 import by.niaprauski.data.database.getRoom
@@ -32,6 +33,12 @@ object DatabaseModule {
     @Provides
     fun provideTagDao(db: AppDatabase): TagDao {
         return db.tagDao()
+    }
+
+    @Singleton
+    @Provides
+    fun providePlayListDao(db: AppDatabase): PlayListDao {
+        return db.playListDao()
     }
 
 }

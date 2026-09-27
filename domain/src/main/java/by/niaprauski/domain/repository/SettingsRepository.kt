@@ -33,5 +33,7 @@ interface SettingsRepository {
 
     suspend fun setAutoPlay(isAutoPlay: Boolean)
 
+    suspend fun setSavePlayList(isSavePlayList: Boolean)
+
 
 }

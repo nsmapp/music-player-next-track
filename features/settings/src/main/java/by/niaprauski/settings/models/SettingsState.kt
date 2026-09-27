@@ -17,6 +17,7 @@ data class SettingsState(
     val isLikeTrackPriority: Boolean,
     val likedTrackPercent: String,
     val isAutoPlay: Boolean,
+    val isSaveLastPlayList: Boolean,
 ){
 
     companion object{
@@ -32,7 +33,8 @@ data class SettingsState(
             playListLimitSize = "100",
             isLikeTrackPriority = true,
             likedTrackPercent = "50",
-            isAutoPlay = false
+            isAutoPlay = false,
+            isSaveLastPlayList = true,
         )
     }
 }
