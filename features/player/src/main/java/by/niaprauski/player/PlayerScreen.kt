@@ -145,6 +145,7 @@ fun PlayerScreen(
             sheetState = rememberModalBottomSheetState(
                 skipPartiallyExpanded = false,
             ),
+            scrimColor = AppTheme.appColors.background_dark_085,
             containerColor = AppTheme.appColors.background,
             dragHandle = {
                 BottomSheetDefaults.DragHandle(

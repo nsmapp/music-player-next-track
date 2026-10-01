@@ -193,6 +193,10 @@ class PlayerViewModel @AssistedInject constructor(
             return
         }
 
+        setPlaylistAndPlay(items)
+    }
+
+    private suspend fun setPlaylistAndPlay(items: List<Track>) {
         setPlayList(trackModelMapper.toMediaItems(items))
         appSettings?.isAutoPlayOnLaunch?.let { isAutoPlay ->
             if (isAutoPlay) _event.send(PlayerEvent.Play)
@@ -375,11 +379,13 @@ class PlayerViewModel @AssistedInject constructor(
     private fun createNewPlayList() {
         viewModelScope.launch {
             createNewPlayListUseCase.invoke()
-                .onSuccess { items ->
-                    setPlayList(trackModelMapper.toMediaItems(items))
-                    _event.send(PlayerEvent.PlaylistChanged)
-                }
+                .onSuccess { items -> handleSuccessCreateNewPlayList(items) }
         }
+    }
+
+    private suspend fun handleSuccessCreateNewPlayList(items: List<Track>) {
+        setPlaylistAndPlay(items)
+        _event.send(PlayerEvent.PlaylistChanged)
     }
 
     private fun getSettings() {
