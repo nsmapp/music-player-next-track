@@ -67,7 +67,7 @@ fun Root(
                 NavigationBarItem(
                     selected = navigator.currentScreen is PlayerDest,
                     onClick = { navigator.navigateSingleTop(PlayerDest.root())},
-                    icon = { SmallIcon(imageVector = IIcon.audioTrack) },
+                    icon = { SmallIcon(imageVector = IIcon.playBird) },
                     colors = navigationBarItemColors,
                 )
 

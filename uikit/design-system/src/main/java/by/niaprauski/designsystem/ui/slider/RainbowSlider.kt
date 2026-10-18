@@ -80,7 +80,6 @@ fun RainbowSlider(
                     modifier = Modifier
                         .size(AppTheme.viewSize.micro)
                         .clip(RoundedCornerShape(AppTheme.viewSize.micro))
-                        .background(AppTheme.appColors.text)
                         .background(AppTheme.appColors.accent)
                 )
             }

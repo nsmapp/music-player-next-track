@@ -30,6 +30,7 @@ import androidx.compose.material.icons.rounded.Sync
 object IIcon {
     val pause = Icons.Rounded.Pause
     val play = Icons.Rounded.PlayArrow
+    val playBird = Play64
     val audioTrack = Icons.Rounded.Audiotrack
     val repeat = Icons.Rounded.Repeat
     val repeatOn = Icons.Rounded.RepeatOn

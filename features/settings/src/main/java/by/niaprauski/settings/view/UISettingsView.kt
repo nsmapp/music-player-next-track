@@ -30,6 +30,7 @@ fun UISettingsView(
     )
 
     RainbowSlider(
+        modifier = Modifier.padding(end = AppTheme.padding.mini),
         trackProgress = accentPosition,
         valueRange = 0f..1f,
         steps = 0,
@@ -43,6 +44,7 @@ fun UISettingsView(
     )
 
     RainbowSlider(
+        modifier = Modifier.padding(end = AppTheme.padding.mini),
         trackProgress = backgroundPosition,
         valueRange = 0f..1f,
         steps = 0,

@@ -133,7 +133,7 @@ class PlayerViewModel @AssistedInject constructor(
                 radioTrack != null -> playRadioTrack(radioTrack)
                 singleAudioTrack != null -> playSingleAudioTrack(singleAudioTrack)
                 isSaveLastPlayList -> loadPlayList()
-                else -> createNewPlayList()
+                else -> createNewPlayListAndNotify()
             }
         }
     }
@@ -165,7 +165,7 @@ class PlayerViewModel @AssistedInject constructor(
             is PAction.HideMediaPermissionInfoDialog -> hideMediaPermissionInfoDialog()
             is PAction.ShowPlayList -> showPlayList()
             is PAction.HidePlayList -> hidePlayList()
-            is PAction.ReloadPlayList -> createNewPlayList()
+            is PAction.ReloadPlayList -> createNewPlayListAndNotify()
             is PAction.SeekTo -> seekTo(action.position)
             is PAction.UpTrackFavorite -> upTrackFavorite(action.trackId)
             is PAction.ChangeTrackFavorite -> changeTrackFavorite(action.trackId)
@@ -188,8 +188,8 @@ class PlayerViewModel @AssistedInject constructor(
     }
 
     private suspend fun handleSuccessLoadTracks(items: List<Track>) {
-        if (items.isEmpty()){
-            createNewPlayList()
+        if (items.isEmpty()) {
+            createNewPlayListCore()
             return
         }
 
@@ -232,7 +232,7 @@ class PlayerViewModel @AssistedInject constructor(
     }
 
     private fun handleSyncedTracks() {
-        if (_state.value.trackCount == 0) createNewPlayList()
+        if (_state.value.trackCount == 0) createNewPlayListSilent()
     }
 
     private fun play() {
@@ -376,16 +376,23 @@ class PlayerViewModel @AssistedInject constructor(
         }
     }
 
-    private fun createNewPlayList() {
+    private suspend fun createNewPlayListCore(): Result<List<Track>> {
+        return createNewPlayListUseCase.invoke()
+            .onSuccess { items -> setPlaylistAndPlay(items) }
+    }
+
+    private fun createNewPlayListSilent() {
         viewModelScope.launch {
-            createNewPlayListUseCase.invoke()
-                .onSuccess { items -> handleSuccessCreateNewPlayList(items) }
+            createNewPlayListCore()
         }
     }
 
-    private suspend fun handleSuccessCreateNewPlayList(items: List<Track>) {
-        setPlaylistAndPlay(items)
-        _event.send(PlayerEvent.PlaylistChanged)
+    private fun createNewPlayListAndNotify() {
+        viewModelScope.launch {
+            createNewPlayListCore().onSuccess {
+                _event.send(PlayerEvent.PlaylistChanged)
+            }
+        }
     }
 
     private fun getSettings() {

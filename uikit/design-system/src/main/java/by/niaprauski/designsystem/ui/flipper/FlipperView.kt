@@ -1,14 +1,8 @@
 package by.niaprauski.designsystem.ui.flipper
 
-import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.ContentTransform
-import androidx.compose.animation.core.Spring
-import androidx.compose.animation.core.spring
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
-import androidx.compose.animation.togetherWith
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -24,10 +18,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
@@ -52,14 +46,15 @@ fun FlipperView(
             modifier = Modifier
                 .fillMaxWidth()
                 .wrapContentHeight()
-                .semantics { role = Role.Button }
+                .semantics { role = Role.Button}
                 .clickable { opened = !opened }
                 .drawBehind {
                     drawLine(
                         color = dividerColor,
                         start = Offset(0f, size.height),
                         end = Offset(size.width, size.height),
-                        strokeWidth = dividerHeight.toPx()
+                        strokeWidth = dividerHeight.toPx(),
+                        cap = StrokeCap.Round,
                     )
                 }
                 .padding(AppTheme.padding.mini),
@@ -77,47 +72,33 @@ fun FlipperView(
             )
         }
 
-        AnimatedContent(
+        AnimatedVisibility(
             modifier = Modifier
                 .fillMaxWidth(),
-            targetState = opened,
-            transitionSpec = { controlViewTransform() },
-            contentAlignment = Alignment.BottomEnd,
-            content = { isVisible ->
-                if (isVisible) {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .wrapContentHeight()
-                            .drawBehind {
-                                drawLine(
-                                    color = dividerColor,
-                                    start = Offset(size.width, 0f),
-                                    end = Offset(size.width, size.height),
-                                    strokeWidth = dividerHeight.toPx()
-                                )
-                            }
-                    ) {
-                        content()
-                    }
+            visible = opened,
+            enter = expandVertically(),
+            exit = shrinkVertically(),
+            content = {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .wrapContentHeight()
+                        .drawBehind {
+                            drawLine(
+                                color = dividerColor,
+                                start = Offset(size.width, 0f),
+                                end = Offset(size.width, size.height),
+                                strokeWidth = dividerHeight.toPx(),
+                                cap = StrokeCap.Round,
+                            )
+                        }
+                ) {
+                    content()
                 }
+
             }
         )
 
     }
 
-}
-
-private fun controlViewTransform(): ContentTransform {
-    val enter = slideInVertically(
-        initialOffsetY = { it },
-        animationSpec = spring(stiffness = Spring.StiffnessLow)
-    ) + fadeIn()
-
-    val exit = slideOutVertically(
-        targetOffsetY = { it },
-        animationSpec = spring(stiffness = Spring.StiffnessLow)
-    ) + fadeOut()
-
-    return enter togetherWith exit
 }
