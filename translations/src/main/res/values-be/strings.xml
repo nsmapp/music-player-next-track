@@ -3,6 +3,11 @@
     <string name="app_name">Vyrai</string>
     <string name="app_version">v0.9</string>
 
+
+    <string name="root_descriptin_library">Бібліятэка</string>
+    <string name="root_description_player">Плэер</string>
+    <string name="root_description_settings">Налады</string>
+
     <!--    feature player-->
     <string name="feature_player_welcome_message">Каб сфармаваць спіс трэкаў, трэба даць праграме доступ да медыяфайлаў. \n\nГэта неабходна толькі для пошуку музыкі на вашай прыладзе.</string>
     <string name="feature_player_close">Адхіліць</string>
@@ -57,6 +62,8 @@
 
     <!--    feature about-->
     <string name="feature_about_application_description">Просты дадатак для праслухоўвання музыкі і онлайн-радыё — проста націсніце «Play».\n\nКалі ў вас ёсць ідэі па паляпшэнні або вы знайшлі памылку, калі ласка, звяжыцеся са мной.</string>
+    <string name="feature_about_github_page">старонка гітхаб</string>
+    <string name="feature_about_email">электронная пошта</string>
 
 
     <!--    feature player service-->

@@ -73,6 +73,7 @@ fun AboutScreen(
                         onShowGitHubPage(context)
                     },
                 imageVector = IIcon.github,
+                contentDescription = stringResource(R.string.feature_about_github_page)
             )
             NormalIcon(
                 modifier = Modifier
@@ -82,6 +83,7 @@ fun AboutScreen(
                         onSendEmail(context)
                     },
                 imageVector = IIcon.mail,
+                contentDescription = stringResource(R.string.feature_about_email)
             )
         }
     }

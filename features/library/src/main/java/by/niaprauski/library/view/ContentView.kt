@@ -47,6 +47,7 @@ import by.niaprauski.library.models.LAction
 import by.niaprauski.library.models.LibraryState
 import by.niaprauski.library.models.TrackModel
 import by.niaprauski.translations.R
+import by.niaprauski.utils.constants.TEXT_EMPTY
 import by.niaprauski.utils.extension.UNKNOWN_TRACK_ID
 
 @Composable
@@ -161,6 +162,8 @@ fun ContentView(
                                 onValueChange = { onAction(LAction.Search(it)) },
                                 hint = stringResource(R.string.feature_library_search),
                                 leadingIcon = IIcon.search,
+                                trailingIcon = if(state.searchText.isNotBlank()) IIcon.cancel else null,
+                                onTrailingClick = { onAction(LAction.Search(TEXT_EMPTY)) },
                             )
 
                             if (state.searchText.isNotBlank()) {
@@ -172,7 +175,7 @@ fun ContentView(
                                             onAction(LAction.PlayFiltered)
                                             keyboardController?.hide()
                                         },
-                                    imageVector = IIcon.playListStartNew,
+                                    imageVector = IIcon.playList,
                                     colorFilter = ColorFilter.tint(AppTheme.appColors.accent),
                                 )
                             }

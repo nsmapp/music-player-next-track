@@ -2,7 +2,6 @@ package by.niaprauski.player.views
 
 import androidx.annotation.OptIn
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -40,7 +39,6 @@ fun PlayersScreenContent(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(color = AppTheme.appColors.background)
             .statusBarsPadding()
             .onSwipe(
                 onUp = { onAction(PAction.PlayNext) },

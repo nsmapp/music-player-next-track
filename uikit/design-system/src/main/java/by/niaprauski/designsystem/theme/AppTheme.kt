@@ -63,6 +63,7 @@ fun AppTheme(
 
         DayColors().copy(
             accent = accentColor,
+            accent20 = accentColor.copy(alpha = 0.2f),
             foreground = backgroundColor,
             foreground_light = backgroundColor.lighten(0.2f),
             background = backgroundColor.darken(0.2f),

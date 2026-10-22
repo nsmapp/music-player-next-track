@@ -6,7 +6,6 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -97,7 +96,6 @@ fun LibraryScreen(
 
     Box(
         modifier = Modifier
-            .background(color = AppTheme.appColors.background)
             .nestedScroll(nestedScrollConnection)
             .statusBarsPadding()
             .padding(AppTheme.padding.mini)

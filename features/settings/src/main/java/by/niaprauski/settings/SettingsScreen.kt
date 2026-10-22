@@ -1,6 +1,5 @@
 package by.niaprauski.settings
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -57,7 +56,6 @@ private fun SettingsScreenContent(
 ) {
     Column(
         modifier = Modifier
-            .background(color = AppTheme.appColors.background)
             .statusBarsPadding()
             .padding(AppTheme.padding.default)
             .fillMaxSize()

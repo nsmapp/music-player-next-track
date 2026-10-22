@@ -11,12 +11,13 @@ fun MicroIcon(
     modifier: Modifier = Modifier,
     imageVector: ImageVector,
     colorFilter: ColorFilter? = ColorFilter.tint(AppTheme.appColors.accent),
+    contentDescription:String? = null,
 ){
     BaseIcon(
         modifier = modifier,
         imageVector = imageVector,
         size = AppTheme.viewSize.micro,
-        contentDescription = null,
+        contentDescription = contentDescription,
         colorFilter = colorFilter,
     )
 }
@@ -26,12 +27,13 @@ fun SmallIcon(
     modifier: Modifier = Modifier,
     imageVector: ImageVector,
     colorFilter: ColorFilter? = ColorFilter.tint(AppTheme.appColors.accent),
+    contentDescription:String? = null,
 ){
     BaseIcon(
         modifier = modifier,
         imageVector = imageVector,
         size = AppTheme.viewSize.small,
-        contentDescription = null,
+        contentDescription = contentDescription,
         colorFilter = colorFilter,
     )
 }
@@ -41,12 +43,13 @@ fun NormalIcon(
     modifier: Modifier = Modifier,
     imageVector: ImageVector,
     colorFilter: ColorFilter? = ColorFilter.tint(AppTheme.appColors.accent),
+    contentDescription: String? = null,
 ){
     BaseIcon(
         modifier = modifier,
         imageVector = imageVector,
         size = AppTheme.viewSize.normal,
-        contentDescription = null,
+        contentDescription = contentDescription,
         colorFilter = colorFilter,
     )
 }

@@ -15,6 +15,7 @@ dependencies {
     implementation(project(":features:settings"))
     implementation(project(":features:about"))
     implementation(project(":uikit:design-system"))
+    implementation(project(":translations"))
 
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.androidx.navigation3.runtime)

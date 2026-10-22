@@ -4,6 +4,10 @@
     <string name="app_version"> v0.9</string>
     <!--    //TODO move version to properties-->
 
+    <string name="root_descriptin_library">Library</string>
+    <string name="root_description_player">Player</string>
+    <string name="root_description_settings">Settings</string>
+
     <!--    feature player-->
     <string name="feature_player_welcome_message">To create your tracklist, please grant the app access to your media files. \n\nThis is only required to search for music on your device.</string>
     <string name="feature_player_close">Close</string>
@@ -59,6 +63,8 @@
 
     <!--    feature about-->
     <string name="feature_about_application_description">A simple music and online radio player — just hit “Play”.\n\nIf you have any suggestions or found a bug, feel free to reach out.</string>
+    <string name="feature_about_github_page">github page</string>
+    <string name="feature_about_email">email</string>
 
     <!--    feature player service-->
     <string name="feature_play_service_next_track_channel" translatable="false">Next Track Channel</string>

@@ -1,6 +1,7 @@
 package by.niaprauski.library.view
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -35,7 +36,8 @@ fun SimplePlayer(
     ) {
 
         TextMedium(
-            modifier = Modifier.weight(1f),
+            modifier = Modifier.weight(1f)
+                .basicMarquee(),
             text = currentTrackName(),
             color = AppTheme.appColors.text,
             maxLines = 1,

@@ -5,6 +5,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.ime
@@ -16,6 +17,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
@@ -25,6 +27,7 @@ import by.niaprauski.designsystem.theme.AppTheme
 import by.niaprauski.designsystem.theme.colors.navigationBarItemColors
 import by.niaprauski.designsystem.theme.icons.IIcon
 import by.niaprauski.designsystem.ui.icons.SmallIcon
+import by.niaprauski.designsystem.ui.modifier.mysteriousBackground
 import by.niaprauski.navigation.screens.about.about
 import by.niaprauski.navigation.screens.library.LibraryDest
 import by.niaprauski.navigation.screens.library.library
@@ -32,6 +35,7 @@ import by.niaprauski.navigation.screens.player.PlayerDest
 import by.niaprauski.navigation.screens.player.player
 import by.niaprauski.navigation.screens.settings.SettingsDest
 import by.niaprauski.navigation.screens.settings.settings
+import by.niaprauski.translations.R
 
 
 @Composable
@@ -48,7 +52,7 @@ fun Root(
     val navigator = remember { Navigator(backStack) }
     val isKeyboardVisible = WindowInsets.ime.asPaddingValues().calculateBottomPadding() > 0.dp
 
-    val entries = remember(navigator){ getEntries(navigator)}
+    val entries = remember(navigator) { getEntries(navigator) }
 
     Scaffold(
         containerColor = AppTheme.appColors.background,
@@ -60,21 +64,36 @@ fun Root(
                 NavigationBarItem(
                     selected = navigator.currentScreen is LibraryDest,
                     onClick = { navigator.navigateTop(LibraryDest.root()) },
-                    icon = { SmallIcon(imageVector = IIcon.library) },
+                    icon = {
+                        SmallIcon(
+                            imageVector = IIcon.library,
+                            contentDescription = stringResource(R.string.root_descriptin_library),
+                        )
+                    },
                     colors = navigationBarItemColors,
                 )
 
                 NavigationBarItem(
                     selected = navigator.currentScreen is PlayerDest,
-                    onClick = { navigator.navigateSingleTop(PlayerDest.root())},
-                    icon = { SmallIcon(imageVector = IIcon.playBird) },
+                    onClick = { navigator.navigateSingleTop(PlayerDest.root()) },
+                    icon = {
+                        SmallIcon(
+                            imageVector = IIcon.playBird,
+                            contentDescription = stringResource(R.string.root_description_player),
+                        )
+                    },
                     colors = navigationBarItemColors,
                 )
 
                 NavigationBarItem(
                     selected = navigator.currentScreen is SettingsDest,
-                    onClick = { navigator.navigateTop(SettingsDest.root())},
-                    icon = { SmallIcon(imageVector = IIcon.settings) },
+                    onClick = { navigator.navigateTop(SettingsDest.root()) },
+                    icon = {
+                        SmallIcon(
+                            imageVector = IIcon.settings,
+                            contentDescription = stringResource(R.string.root_description_settings)
+                        )
+                    },
                     colors = navigationBarItemColors,
                 )
             }
@@ -82,6 +101,8 @@ fun Root(
     ) { padding ->
         NavDisplay(
             modifier = Modifier
+                .background(color = AppTheme.appColors.background)
+                .mysteriousBackground(color = AppTheme.appColors.accent20)
                 .padding(bottom = if (isKeyboardVisible) 0.dp else padding.calculateBottomPadding())
                 .imePadding(),
             transitionSpec = { transformSlideOpen() },

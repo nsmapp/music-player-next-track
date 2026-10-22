@@ -10,9 +10,9 @@ import androidx.paging.map
 import by.niaprauski.domain.models.playlist.PlayListTrack
 import by.niaprauski.domain.models.search.SearchTrackFilter
 import by.niaprauski.domain.models.tag.Tag
-import by.niaprauski.domain.usecases.playlist.AddTrackToPlayListUseCase
 import by.niaprauski.domain.usecases.playlist.CreateFilteredPlayListUseCase
 import by.niaprauski.domain.usecases.playlist.RemoveFromPlayListUseCase
+import by.niaprauski.domain.usecases.playlist.SaveTrackToPlayListUseCase
 import by.niaprauski.domain.usecases.tag.GetTracksByTagUseCase
 import by.niaprauski.domain.usecases.tag.SearchTagUseCase
 import by.niaprauski.domain.usecases.track.GetTracksPagedUseCase
@@ -56,7 +56,7 @@ class LibraryViewModel @Inject constructor(
     private val createFilteredPlayListUseCase: CreateFilteredPlayListUseCase,
     private val getUnanalyzedTrackCountUseCase: GetUnanalyzedTrackCountUseCase,
     private val getTracksByTagUseCase: GetTracksByTagUseCase,
-    private val addTrackToPlayListUseCase: AddTrackToPlayListUseCase,
+    private val saveTrackToPlayListUseCase: SaveTrackToPlayListUseCase,
     private val removeFromPlayListUseCase: RemoveFromPlayListUseCase,
     private val searchTagUseCase: SearchTagUseCase,
     private val trackModelMapper: TrackModelMapper,
@@ -219,7 +219,7 @@ class LibraryViewModel @Inject constructor(
 
     private fun addTrackToPlayList(track: TrackModel) {
         viewModelScope.launch {
-            addTrackToPlayListUseCase.invoke(PlayListTrack(track.id))
+            saveTrackToPlayListUseCase.invoke(PlayListTrack(track.id))
         }
     }
 
