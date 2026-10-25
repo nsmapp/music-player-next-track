@@ -35,7 +35,6 @@ import by.niaprauski.player.views.TrackItem
 import by.niaprauski.player.views.dialogs.FirstLaunchDialog
 import by.niaprauski.player.views.dialogs.NeedMediaPermissionDialog
 import by.niaprauski.playerservice.models.TrackProgress
-import by.niaprauski.playerservice.models.WaveformData
 import by.niaprauski.translations.R
 import by.niaprauski.utils.media.MediaHandler
 import by.niaprauski.utils.messages.showToast
@@ -57,7 +56,6 @@ fun PlayerScreen(
     val state: PlayerState by viewModel.state.collectAsStateWithLifecycle()
     val playerService by viewModel.playerService.collectAsStateWithLifecycle()
     val trackProgress: TrackProgress by viewModel.trackProgress.collectAsStateWithLifecycle()
-    val waveform: WaveformData by viewModel.waveform.collectAsStateWithLifecycle()
 
     val hasMediaPermission by MediaPermissions.rememberMediaPermissions()
 
@@ -132,7 +130,7 @@ fun PlayerScreen(
         exoPlayerState = state.exoPlayerState,
         isVisuallyEnabled = state.isVisuallyEnabled,
         trackProgress = { trackProgress },
-        waveform = waveform,
+        waveformFlow = viewModel.waveform,
         isSyncing = state.isSyncing,
         onAction = { viewModel.onAction(it) },
         hasMediaPermission = hasMediaPermission,
