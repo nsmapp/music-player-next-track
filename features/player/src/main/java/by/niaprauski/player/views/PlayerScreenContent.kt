@@ -29,7 +29,7 @@ import by.niaprauski.playerservice.models.WaveformData
 fun PlayersScreenContent(
     exoPlayerState: ExoPlayerState,
     isVisuallyEnabled: Boolean,
-    trackProgress: TrackProgress,
+    trackProgress: () -> TrackProgress,
     waveform: WaveformData,
     isSyncing: Boolean,
     onAction: (PAction) -> Unit,

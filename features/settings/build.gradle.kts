@@ -7,5 +7,7 @@ android {
 }
 
 dependencies {
+    implementation(project(":player-service"))
+    implementation(libs.media3.mediasession)
 
 }

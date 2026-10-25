@@ -12,6 +12,7 @@ import android.view.KeyEvent
 import androidx.annotation.OptIn
 import androidx.core.app.NotificationCompat
 import androidx.media3.common.MediaMetadata
+import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.session.MediaButtonReceiver
@@ -101,9 +102,13 @@ class NotificationCreator {
         val nextText =
             context.getString(R.string.feature_play_service_next)
 
+        val isPlaying = player?.playWhenReady == true &&
+                player.playbackState != Player.STATE_ENDED &&
+                player.playbackState != Player.STATE_IDLE
+
         val playPauseIconId =
-            if (player?.isPlaying == true) android.R.drawable.ic_media_pause else android.R.drawable.ic_media_play
-        val playPauseText = if (player?.isPlaying == true) pauseText else playText
+            if (isPlaying) android.R.drawable.ic_media_pause else android.R.drawable.ic_media_play
+        val playPauseText = if (isPlaying) pauseText else playText
         val playPauseIntent = playPausePendingIntent
 
         builder

@@ -1,8 +1,11 @@
 package by.niaprauski.settings
 
+import android.app.Application
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import by.niaprauski.domain.models.playlist.PlayListTrack
 import by.niaprauski.domain.models.settings.AppSettings
+import by.niaprauski.domain.usecases.playlist.OverridePlayListUseCase
 import by.niaprauski.domain.usecases.settings.GetSettingsUseCase
 import by.niaprauski.domain.usecases.settings.SetAccentColorUseCase
 import by.niaprauski.domain.usecases.settings.SetAutoPlayAfterLaunchUseCase
@@ -14,6 +17,8 @@ import by.niaprauski.domain.usecases.settings.SetMinTrackDurationUseCase
 import by.niaprauski.domain.usecases.settings.SetPlayListLimitSizeUseCase
 import by.niaprauski.domain.usecases.settings.SetSaveLastPlayListUseCase
 import by.niaprauski.domain.usecases.settings.SetVisualizerStatusUseCase
+import by.niaprauski.playerservice.PlayerService
+import by.niaprauski.playerservice.PlayerServiceConnection
 import by.niaprauski.settings.models.SAction
 import by.niaprauski.settings.models.SettingsState
 import by.niaprauski.utils.extension.convertToInt
@@ -22,13 +27,19 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import jakarta.inject.Inject
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
+
+@androidx.media3.common.util.UnstableApi
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
+    private val application: Application,
     private val getSettingsUseCase: GetSettingsUseCase,
     private val setVisualizerStatusUseCase: SetVisualizerStatusUseCase,
     private val setMinDurationUseCase: SetMinTrackDurationUseCase,
@@ -40,6 +51,7 @@ class SettingsViewModel @Inject constructor(
     private val setLikedTrackPercentUseCase: SetLikedTrackPercentInPlayListUseCase,
     private val setAutoPlayAfterLaunchUseCase: SetAutoPlayAfterLaunchUseCase,
     private val setSaveLastPlayListUseCase: SetSaveLastPlayListUseCase,
+    private val overridePlayListUseCase: OverridePlayListUseCase,
 ) : ViewModel() {
 
     companion object {
@@ -48,6 +60,14 @@ class SettingsViewModel @Inject constructor(
         private const val SEK_MLS = 1000
         private const val MIN_MLS = 60000
     }
+
+    private val serviceConnection = PlayerServiceConnection(application)
+
+    val playerService: StateFlow<PlayerService?> = serviceConnection.service.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = null
+    )
 
     private val _state = MutableStateFlow(SettingsState.INITIAL)
     val state = _state.asStateFlow()
@@ -64,6 +84,7 @@ class SettingsViewModel @Inject constructor(
 
     fun onLaunch() {
         getSettings()
+        serviceConnection.bind()
     }
 
     fun onAction(action: SAction) {
@@ -294,7 +315,20 @@ class SettingsViewModel @Inject constructor(
         viewModelScope.launch {
             setSaveLastPlayListUseCase.invoke(enabled)
                 .onComplete { _state.update { it.copy(isSaveLastPlayList = enabled) } }
+
+            if (enabled){
+                val playList = playerService.value?.playList
+                    ?.value
+                    ?.map { track -> PlayListTrack(track.id) }
+                    ?: emptyList()
+                overridePlayListUseCase.invoke(playList)
+            }
         }
+    }
+
+    override fun onCleared() {
+        serviceConnection.unbind()
+        super.onCleared()
     }
 
 }

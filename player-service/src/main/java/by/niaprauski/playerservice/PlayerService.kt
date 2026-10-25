@@ -517,11 +517,16 @@ class PlayerService : MediaSessionService() {
                 Player.EVENT_IS_PLAYING_CHANGED,
                 Player.EVENT_SHUFFLE_MODE_ENABLED_CHANGED,
                 Player.EVENT_REPEAT_MODE_CHANGED,
-                Player.EVENT_PLAYBACK_STATE_CHANGED
+                Player.EVENT_PLAYBACK_STATE_CHANGED,
+                Player.EVENT_PLAY_WHEN_READY_CHANGED
             )
         ) _state.update {
+            val isPlaying = player.playWhenReady &&
+                    player.playbackState != Player.STATE_ENDED &&
+                    player.playbackState != Player.STATE_IDLE
+
             it.copy(
-                isPlaying = player.isPlaying,
+                isPlaying = isPlaying,
                 shuffle = player.shuffleModeEnabled,
                 repeatMode = player.repeatMode
             )

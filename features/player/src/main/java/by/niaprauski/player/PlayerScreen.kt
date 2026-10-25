@@ -131,7 +131,7 @@ fun PlayerScreen(
     PlayersScreenContent(
         exoPlayerState = state.exoPlayerState,
         isVisuallyEnabled = state.isVisuallyEnabled,
-        trackProgress = trackProgress,
+        trackProgress = { trackProgress },
         waveform = waveform,
         isSyncing = state.isSyncing,
         onAction = { viewModel.onAction(it) },
