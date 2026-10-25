@@ -22,7 +22,7 @@ object AppSettingsSerializer : Serializer<AppSettingsEntity> {
         .setIsLikeTrackPriority(true)
         .setLikedTrackPercent(50)
         .setIsAutoPlayOnStart(false)
-        .setIsSavePlayList(true)
+        .setIsSavePlayList(false)
         .build()
 
     override suspend fun readFrom(input: InputStream): AppSettingsEntity {

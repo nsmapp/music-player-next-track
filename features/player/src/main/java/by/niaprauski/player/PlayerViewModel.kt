@@ -24,14 +24,15 @@ import by.niaprauski.player.models.PAction
 import by.niaprauski.player.models.PlayerEvent
 import by.niaprauski.player.models.PlayerState
 import by.niaprauski.player.models.SyncTrackStatus
+import by.niaprauski.playerservice.PlayerConnectionController
 import by.niaprauski.playerservice.PlayerService
-import by.niaprauski.playerservice.PlayerServiceConnection
 import by.niaprauski.playerservice.models.ExoPlayerState
 import by.niaprauski.playerservice.models.TrackProgress
 import by.niaprauski.playerservice.models.WaveformData
 import by.niaprauski.utils.media.ITrackShort
 import by.niaprauski.utils.media.MediaHandler
 import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -45,13 +46,10 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @UnstableApi
@@ -60,6 +58,7 @@ class PlayerViewModel @AssistedInject constructor(
     @Assisted("radioTrack") val radioTrack: Uri? = null,
     @Assisted("singleAudioTrack") val singleAudioTrack: Uri? = null,
     private val application: Application,
+    private val playerConnectionController: PlayerConnectionController,
     private val filterAndSaveTracksUseCase: FilterAndSaveTracksUseCase,
     private val createNewPlayListUseCase: CreateNewPlayListUseCase,
     private val loadPlayListUseCase: LoadPlayListUseCase,
@@ -71,7 +70,7 @@ class PlayerViewModel @AssistedInject constructor(
     private val trackModelMapper: TrackModelMapper,
 ) : ViewModel() {
 
-    @dagger.assisted.AssistedFactory
+    @AssistedFactory
     interface Factory {
         fun create(
             @Assisted("radioTrack") radioTrack: Uri?,
@@ -79,23 +78,14 @@ class PlayerViewModel @AssistedInject constructor(
         ): PlayerViewModel
     }
 
-    private val serviceConnection = PlayerServiceConnection(application)
-    val playerService: StateFlow<PlayerService?> = serviceConnection.service.stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(5000),
-        initialValue = null
-    )
+    val playerService: StateFlow<PlayerService?> = playerConnectionController.service
 
     private val _state = MutableStateFlow<PlayerState>(PlayerState.DEFAULT)
     private var appSettings: AppSettings? = null
 
-    private val exoPlayerState: Flow<ExoPlayerState> = playerService.flatMapLatest { service ->
-        service?.state ?: flowOf(ExoPlayerState.DEFAULT)
-    }
+    private val exoPlayerState: Flow<ExoPlayerState> = playerConnectionController.exoPlayerState
 
-    private val playList: Flow<List<ITrackShort>> = playerService.flatMapLatest { service ->
-        service?.playList ?: flowOf(emptyList())
-    }
+    private val playList: Flow<List<ITrackShort>> = playerConnectionController.playList
 
     val state: StateFlow<PlayerState> =
         combine(_state, exoPlayerState, playList) { uiState, playerState, tracks ->
@@ -103,23 +93,19 @@ class PlayerViewModel @AssistedInject constructor(
         }.stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000),
-            initialValue = PlayerState.DEFAULT
+            initialValue = PlayerState.DEFAULT,
         )
 
-    val trackProgress: StateFlow<TrackProgress> = playerService.flatMapLatest { service ->
-        service?.trackProgress ?: flowOf(TrackProgress.DEFAULT)
-    }.stateIn(
+    val trackProgress: StateFlow<TrackProgress> = playerConnectionController.trackProgress.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5000),
-        initialValue = TrackProgress.DEFAULT
+        initialValue = TrackProgress.DEFAULT,
     )
 
-    val waveform: StateFlow<WaveformData> = playerService.flatMapLatest { service ->
-        service?.waveform ?: flowOf(WaveformData.DEFAULT)
-    }.stateIn(
+    val waveform: StateFlow<WaveformData> = playerConnectionController.waveform.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5000),
-        initialValue = WaveformData.DEFAULT
+        initialValue = WaveformData.DEFAULT,
     )
 
     private val _event by lazy { Channel<PlayerEvent>() }
@@ -145,7 +131,7 @@ class PlayerViewModel @AssistedInject constructor(
     fun onCreate() {
         if (playerService.value != null) return
 
-        serviceConnection.bind()
+        playerConnectionController.bind()
         startPlayerService(application)
         playInitialTrack()
     }
@@ -211,7 +197,6 @@ class PlayerViewModel @AssistedInject constructor(
     }
 
     private suspend fun CoroutineScope.saveTracks(syncTracks: SyncTrackStatus.Finished) {
-
         val saveJob = launch {
             val syncTracks = trackModelMapper.toDomainModels(syncTracks.tracks)
             filterAndSaveTracksUseCase.invoke(syncTracks)
@@ -401,17 +386,12 @@ class PlayerViewModel @AssistedInject constructor(
                 _state.update {
                     it.copy(
                         isShowWelcomeDialog = settings.isShowWelcomeMessage,
-                        isVisuallyEnabled = settings.isVisuallyEnabled
+                        isVisuallyEnabled = settings.isVisuallyEnabled,
                     )
                 }
                 appSettings = settings
             }
         }
-    }
-
-    override fun onCleared() {
-        serviceConnection.unbind()
-        super.onCleared()
     }
 
     private fun startPlayerService(context: Context) {

@@ -1,8 +1,8 @@
 package by.niaprauski.settings
 
-import android.app.Application
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.media3.common.util.UnstableApi
 import by.niaprauski.domain.models.playlist.PlayListTrack
 import by.niaprauski.domain.models.settings.AppSettings
 import by.niaprauski.domain.usecases.playlist.OverridePlayListUseCase
@@ -17,8 +17,8 @@ import by.niaprauski.domain.usecases.settings.SetMinTrackDurationUseCase
 import by.niaprauski.domain.usecases.settings.SetPlayListLimitSizeUseCase
 import by.niaprauski.domain.usecases.settings.SetSaveLastPlayListUseCase
 import by.niaprauski.domain.usecases.settings.SetVisualizerStatusUseCase
+import by.niaprauski.playerservice.PlayerConnectionController
 import by.niaprauski.playerservice.PlayerService
-import by.niaprauski.playerservice.PlayerServiceConnection
 import by.niaprauski.settings.models.SAction
 import by.niaprauski.settings.models.SettingsState
 import by.niaprauski.utils.extension.convertToInt
@@ -27,19 +27,16 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import jakarta.inject.Inject
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.debounce
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-
-@androidx.media3.common.util.UnstableApi
+@UnstableApi
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
-    private val application: Application,
+    private val playerConnectionController: PlayerConnectionController,
     private val getSettingsUseCase: GetSettingsUseCase,
     private val setVisualizerStatusUseCase: SetVisualizerStatusUseCase,
     private val setMinDurationUseCase: SetMinTrackDurationUseCase,
@@ -61,13 +58,7 @@ class SettingsViewModel @Inject constructor(
         private const val MIN_MLS = 60000
     }
 
-    private val serviceConnection = PlayerServiceConnection(application)
-
-    val playerService: StateFlow<PlayerService?> = serviceConnection.service.stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(5000),
-        initialValue = null
-    )
+    val playerService: StateFlow<PlayerService?> = playerConnectionController.service
 
     private val _state = MutableStateFlow(SettingsState.INITIAL)
     val state = _state.asStateFlow()
@@ -77,14 +68,11 @@ class SettingsViewModel @Inject constructor(
     private val _maxTrackCount = MutableSharedFlow<Int>()
     private val _likedTrackPercent = MutableSharedFlow<Int>()
 
-
     private val _accentPosition = MutableSharedFlow<Pair<String, Float>>()
     private val _backgroundPosition = MutableSharedFlow<Pair<String, Float>>()
 
-
     fun onLaunch() {
         getSettings()
-        serviceConnection.bind()
     }
 
     fun onAction(action: SAction) {
@@ -140,7 +128,6 @@ class SettingsViewModel @Inject constructor(
         startCollectLikedTrackPercent()
     }
 
-
     private fun startCollectMinDuration() {
         viewModelScope.launch {
             _minDuration
@@ -180,7 +167,7 @@ class SettingsViewModel @Inject constructor(
         }
     }
 
-    private fun startCollectLikedTrackPercent(){
+    private fun startCollectLikedTrackPercent() {
         viewModelScope.launch {
             _likedTrackPercent
                 .debounce(INPUT_DEBOUNCE_TEXT)
@@ -195,7 +182,6 @@ class SettingsViewModel @Inject constructor(
             setVisualizerStatusUseCase.set(enabled)
                 .onSuccess { _state.update { it.copy(isVisuallyEnabled = enabled) } }
         }
-
     }
 
     private fun setMinDuration(duration: String) {
@@ -229,7 +215,6 @@ class SettingsViewModel @Inject constructor(
         viewModelScope.launch {
             _accentPosition.emit(hexColor to position)
         }
-
     }
 
     private fun setBackgroundColorSettings(hexColor: String, position: Float) {
@@ -316,7 +301,7 @@ class SettingsViewModel @Inject constructor(
             setSaveLastPlayListUseCase.invoke(enabled)
                 .onComplete { _state.update { it.copy(isSaveLastPlayList = enabled) } }
 
-            if (enabled){
+            if (enabled) {
                 val playList = playerService.value?.playList
                     ?.value
                     ?.map { track -> PlayListTrack(track.id) }
@@ -325,10 +310,4 @@ class SettingsViewModel @Inject constructor(
             }
         }
     }
-
-    override fun onCleared() {
-        serviceConnection.unbind()
-        super.onCleared()
-    }
-
 }

@@ -1,6 +1,5 @@
 package by.niaprauski.library
 
-import android.app.Application
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.media3.common.util.UnstableApi
@@ -24,8 +23,8 @@ import by.niaprauski.library.models.LAction
 import by.niaprauski.library.models.LibraryEvent
 import by.niaprauski.library.models.LibraryState
 import by.niaprauski.library.models.TrackModel
+import by.niaprauski.playerservice.PlayerConnectionController
 import by.niaprauski.playerservice.PlayerService
-import by.niaprauski.playerservice.PlayerServiceConnection
 import by.niaprauski.playerservice.models.ExoPlayerState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
@@ -38,7 +37,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
@@ -49,7 +47,7 @@ import javax.inject.Inject
 @UnstableApi
 @HiltViewModel
 class LibraryViewModel @Inject constructor(
-    private val application: Application,
+    private val playerConnectionController: PlayerConnectionController,
     private val getTrackPagedUseCase: GetTracksPagedUseCase,
     private val markTrackAsIgnoredUseCase: MarkTrackAsIgnoredUseCase,
     private val unmarkTrackAsIgnoredUseCase: UnmarkTrackAsIgnoredUseCase,
@@ -62,19 +60,12 @@ class LibraryViewModel @Inject constructor(
     private val trackModelMapper: TrackModelMapper,
 ) : ViewModel() {
 
-    private val serviceConnection = PlayerServiceConnection(application)
-    val playerService: StateFlow<PlayerService?> = serviceConnection.service.stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(5000),
-        initialValue = null
-    )
+    val playerService: StateFlow<PlayerService?> = playerConnectionController.service
 
-    val exoPlayerState: StateFlow<ExoPlayerState> = playerService.flatMapLatest { service ->
-        service?.state ?: flowOf(ExoPlayerState.DEFAULT)
-    }.stateIn(
+    val exoPlayerState: StateFlow<ExoPlayerState> = playerConnectionController.exoPlayerState.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5000),
-        initialValue = ExoPlayerState.DEFAULT
+        initialValue = ExoPlayerState.DEFAULT,
     )
 
     private val _state = MutableStateFlow(LibraryState.INITIAL)
@@ -130,7 +121,7 @@ class LibraryViewModel @Inject constructor(
     }
 
     fun onCreate() {
-        serviceConnection.bind()
+        playerConnectionController.bind()
     }
 
     fun onAction(action: LAction) {
@@ -153,14 +144,12 @@ class LibraryViewModel @Inject constructor(
                     val mediaItems = tracks.map { track -> trackModelMapper.toMediaItem(track) }
                     _event.send(LibraryEvent.PlayMediaItems(mediaItems))
                 }
-
         }
     }
 
     private fun showTracksByTag(tag: Tag) {
         viewModelScope.launch {
             _searchFlow.update { it.copy(isTag = true, tagId = tag.tagId) }
-
         }
     }
 
@@ -172,7 +161,6 @@ class LibraryViewModel @Inject constructor(
 
     //TODO refactor to trackId
     private fun ignoreTrack(track: TrackModel) {
-
         viewModelScope.launch {
             markTrackAsIgnoredUseCase.invoke(track.id)
                 .onSuccess {
@@ -227,13 +215,7 @@ class LibraryViewModel @Inject constructor(
         removeFromPlayListUseCase.invoke(PlayListTrack(track.id))
     }
 
-    override fun onCleared() {
-        serviceConnection.unbind()
-        super.onCleared()
-    }
-
     companion object {
-
         private const val DEBOUNCE_SEARCH_INPUT = 250L
     }
 }
