@@ -41,7 +41,7 @@ private class CirclePrimitive(
     val center: Offset,
     val radius: Float,
     val color: Color,
-    val strokeWidthPx: Float,
+    val stroke: Stroke,
     val isFilled: Boolean = false,
 )
 
@@ -57,7 +57,8 @@ private class AstrolabeCache(
     val lines: List<LinePrimitive>,
 ) {
     fun draw(drawScope: DrawScope) {
-        circles.forEach { c ->
+
+        for (c in circles) {
             if (c.isFilled) {
                 drawScope.drawCircle(
                     color = c.color,
@@ -69,14 +70,12 @@ private class AstrolabeCache(
                     color = c.color,
                     radius = c.radius,
                     center = c.center,
-                    style = Stroke(
-                        width = c.strokeWidthPx,
-                    ),
+                    style = c.stroke,
                 )
             }
         }
 
-        lines.forEach { l ->
+        for (l in lines) {
             drawScope.drawLine(
                 color = l.color,
                 start = l.start,
@@ -154,7 +153,7 @@ private object CelestialAstrolabePattern {
                     center = center,
                     radius = radius,
                     color = color.copy(alpha = color.alpha * 0.5f),
-                    strokeWidthPx = strokeWidthPx,
+                    stroke = Stroke(strokeWidthPx),
                 ),
             )
         }
@@ -168,7 +167,7 @@ private object CelestialAstrolabePattern {
                 center = offsetCenter,
                 radius = maxRadius * 0.75f,
                 color = color.copy(alpha = color.alpha * 0.35f),
-                strokeWidthPx = strokeWidthPx * 0.8f,
+                stroke = Stroke(strokeWidthPx * 0.8f),
             ),
         )
 
@@ -213,7 +212,7 @@ private object CelestialAstrolabePattern {
                     center = point,
                     radius = strokeWidthPx * 2.2f,
                     color = color,
-                    strokeWidthPx = 0f,
+                    stroke = Stroke(0f),
                     isFilled = true,
                 ),
             )

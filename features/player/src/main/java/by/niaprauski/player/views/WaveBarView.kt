@@ -3,7 +3,6 @@ package by.niaprauski.player.views
 import androidx.annotation.OptIn
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.geometry.CornerRadius
@@ -14,6 +13,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.media3.common.util.UnstableApi
 import by.niaprauski.designsystem.theme.AppTheme
 import by.niaprauski.playerservice.models.WaveformData
+import by.niaprauski.playerservice.utils.SoundProcessor
 import kotlinx.coroutines.flow.StateFlow
 
 @OptIn(UnstableApi::class)
@@ -25,13 +25,12 @@ fun WaveBarView(
 ) {
     if (!isPlaying) return
 
-    val waveformData by waveformFlow.collectAsStateWithLifecycle()
+    val waveformState = waveformFlow.collectAsStateWithLifecycle()
     val barColor = AppTheme.appColors.text_ligth
 
     Spacer(
         modifier = modifier.drawWithCache {
-            val wave = waveformData.values
-            val count = wave.size
+            val count = SoundProcessor.CHUNK_COUNT
             val gapPx = 2.dp.toPx()
             val minHeightPx = 1.dp.toPx()
             val width = size.width
@@ -39,14 +38,17 @@ fun WaveBarView(
 
             val totalGapsWidth = (count - 1) * gapPx
             val totalBarWidth = width - totalGapsWidth
-            val barWidth = if (count > 0 && totalBarWidth > 0f) totalBarWidth / count else 0f
+            val barWidth = if (totalBarWidth > 0f) totalBarWidth / count else 0f
             val cornerRadiusPx = barWidth / 2f
             val cornerRadius = CornerRadius(cornerRadiusPx, cornerRadiusPx)
 
             onDrawBehind {
-                if (count == 0 || barWidth <= 0f) return@onDrawBehind
+                if (barWidth <= 0f) return@onDrawBehind
 
-                for (i in 0 until count) {
+                val wave = waveformState.value.values
+                val actualCount = wave.size.coerceAtMost(count)
+
+                for (i in 0 until actualCount) {
                     val value = wave[i]
                     val barHeight = (height * value).coerceIn(minHeightPx, height)
                     val x = i * (barWidth + gapPx)
