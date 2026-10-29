@@ -38,7 +38,7 @@ fun ColumnScope.TrackListView(
                 TrackItem(
                     track = item,
                     onAction = onAction,
-                    currentTrackId = currentTrackId,
+                    isSelected = currentTrackId.invoke() == item.id,
                 )
             }
         }

@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -30,7 +29,7 @@ import by.niaprauski.translations.R
 fun TrackItem(
     track: TrackModel,
     onAction: (LAction) -> Unit,
-    currentTrackId: () -> String
+    isSelected: Boolean,
 ) {
 
     val textColor = AppTheme.appColors.text
@@ -40,14 +39,13 @@ fun TrackItem(
         if (track.isIgnore) textColorLight else textColor
     }
 
-    val isSelected = remember(track.id) {
-        derivedStateOf { currentTrackId() == track.id }
-    }.value
-
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .pulseAlphaBackgroundWithBottomDivider(isSelected, textColor)
+            .pulseAlphaBackgroundWithBottomDivider(
+                isSelected = isSelected,
+                color = textColor
+            )
             .wrapContentHeight()
             .clickable { onAction(LAction.PlayTrack(track)) }
             .padding(horizontal = AppTheme.padding.default, vertical = AppTheme.padding.default),

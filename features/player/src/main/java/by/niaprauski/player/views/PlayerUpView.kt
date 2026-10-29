@@ -11,7 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.stringResource
 import by.niaprauski.designsystem.theme.AppTheme
 import by.niaprauski.designsystem.theme.icons.IIcon
@@ -53,7 +53,7 @@ fun PlayerUpView(
             description = stringResource(R.string.feature_player_reload_playlist)
         )
 
-        val rotationAngle by animateFloatAsState(
+        val rotationAngle = animateFloatAsState(
             targetValue = if (isSyncing) 0f else 360f,
             animationSpec = tween(durationMillis = if (isSyncing) 750 else 0),
             label = stringResource(R.string.feature_player_syncrotation)
@@ -63,7 +63,7 @@ fun PlayerUpView(
             modifier = Modifier
                 .size(AppTheme.viewSize.normal)
                 .clip(RoundedCornerShape(AppTheme.viewSize.normal))
-                .rotate(rotationAngle),
+                .graphicsLayer{ rotationZ = rotationAngle.value },
             imageVector = IIcon.sync,
             onClick = { onAction(PAction.RequestSync) },
             description = stringResource(R.string.feature_player_sync_playlist)

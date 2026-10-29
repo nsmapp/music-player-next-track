@@ -31,7 +31,7 @@ fun UISettingsView(
 
     RainbowSlider(
         modifier = Modifier.padding(end = AppTheme.padding.mini),
-        trackProgress = accentPosition,
+        progress = accentPosition,
         valueRange = 0f..1f,
         steps = 0,
         colors = rainbowTextColor,
@@ -45,7 +45,7 @@ fun UISettingsView(
 
     RainbowSlider(
         modifier = Modifier.padding(end = AppTheme.padding.mini),
-        trackProgress = backgroundPosition,
+        progress = backgroundPosition,
         valueRange = 0f..1f,
         steps = 0,
         colors = rainbowBackgroundColors,

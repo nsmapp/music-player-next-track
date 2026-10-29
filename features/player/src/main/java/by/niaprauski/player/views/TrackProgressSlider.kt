@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -26,9 +27,11 @@ fun TrackProgressSlider(
 ) {
 
 
-
     var sliderPosition by remember { mutableFloatStateOf(trackProgress.invoke().progress) }
     var isDragging by remember { mutableStateOf(false) }
+    val timePosition by remember {
+        derivedStateOf { trackProgress.invoke().currentPosition }
+    }
 
     LaunchedEffect(Unit) {
         snapshotFlow { trackProgress().progress }
@@ -44,7 +47,7 @@ fun TrackProgressSlider(
     ) {
         CSlider(
             modifier = Modifier.fillMaxWidth(),
-            trackProgress = sliderPosition,
+            progress = sliderPosition,
             valueRange = 0f..1f,
             steps = 0,
             onValueChange = { newPosition ->
@@ -59,7 +62,7 @@ fun TrackProgressSlider(
 
         TextMediumSmall(
             modifier = Modifier.padding(end = AppTheme.padding.default),
-            text = trackProgress.invoke().currentPosition
+            text = timePosition,
         )
     }
 

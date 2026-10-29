@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -19,6 +18,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.media3.common.util.UnstableApi
 import by.niaprauski.designsystem.theme.AppTheme
 import by.niaprauski.designsystem.theme.dimens.defaultRoundedShape
 import by.niaprauski.designsystem.ui.flipper.FlipperView
@@ -31,18 +31,14 @@ import by.niaprauski.settings.view.UISettingsView
 import by.niaprauski.translations.R
 
 
+@UnstableApi
 @Composable
 fun SettingsScreen(
     onNavigateToAbout: () -> Unit,
     viewModel: SettingsViewModel = hiltViewModel(),
 ) {
 
-    LaunchedEffect(Unit) {
-        viewModel.onLaunch()
-    }
-
     val state by viewModel.state.collectAsStateWithLifecycle()
-
 
     SettingsScreenContent(
         state = state, onNavigateToAbout = onNavigateToAbout, onAction = { viewModel.onAction(it) })

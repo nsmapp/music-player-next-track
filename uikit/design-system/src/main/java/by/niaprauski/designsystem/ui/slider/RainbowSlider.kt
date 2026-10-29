@@ -24,6 +24,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.lerp
 import by.niaprauski.designsystem.theme.AppTheme
 import by.niaprauski.utils.extension.toHexString
+import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 
@@ -32,7 +33,7 @@ import kotlinx.coroutines.flow.map
 fun RainbowSlider(
     modifier: Modifier = Modifier,
     colors: List<Color>,
-    trackProgress: Float,
+    progress: Float,
     valueRange: ClosedFloatingPointRange<Float>,
     steps: Int,
     onAccentColorChanged: (String, Float) -> Unit,
@@ -40,29 +41,35 @@ fun RainbowSlider(
 
     val sliderState = remember {
         SliderState(
-            value = trackProgress,
+            value = progress,
             steps = steps,
             valueRange = valueRange
         )
     }
 
-    sliderState.value = trackProgress
+    LaunchedEffect(progress) {
+        if (!sliderState.isDragging) {
+            sliderState.value = progress
+        }
+    }
 
-    LaunchedEffect(sliderState, colors) {
+    LaunchedEffect(colors, valueRange) {
         snapshotFlow { sliderState.value }
             .map { value ->
-                val point =
-                    (value - valueRange.start) / (valueRange.endInclusive - valueRange.start)
-                getColorAtFraction(colors, point)
+                val rangeSpan = valueRange.endInclusive - valueRange.start
+                val point = if (rangeSpan == 0f) 0f else (value - valueRange.start) / rangeSpan
+
+                getColorAtFraction(colors, point.coerceIn(0f, 1f))
             }
             .distinctUntilChanged()
+            .debounce(150)
             .collect { color ->
                 onAccentColorChanged(color.toHexString(), sliderState.value)
             }
     }
 
     Slider(
-        value = trackProgress,
+        value = progress,
         onValueChange = { newPosition ->
             sliderState.value = newPosition
         },

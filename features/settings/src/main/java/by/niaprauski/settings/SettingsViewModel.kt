@@ -71,7 +71,7 @@ class SettingsViewModel @Inject constructor(
     private val _accentPosition = MutableSharedFlow<Pair<String, Float>>()
     private val _backgroundPosition = MutableSharedFlow<Pair<String, Float>>()
 
-    fun onLaunch() {
+    init {
         getSettings()
     }
 

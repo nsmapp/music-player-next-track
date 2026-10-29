@@ -31,13 +31,13 @@ import by.niaprauski.utils.constants.TEXT_EMPTY
 fun LikeCountView(
     onAction: (PAction) -> Unit,
     trackId: String,
-    favorite: () -> Int,
+    favorite: Int,
 ) {
 
-    val favorite = favorite()
     val lastTrackId = remember { mutableStateOf(trackId) }
 
     val scale = remember { Animatable(1f) }
+
     LaunchedEffect(favorite, trackId) {
         if (favorite > 0 && lastTrackId.value == trackId) {
             scale.animateTo(
@@ -53,11 +53,9 @@ fun LikeCountView(
         lastTrackId.value = trackId
     }
 
-    val favoriteIcon by remember(favorite) {
-        derivedStateOf {
-            if (favorite == 0) IIcon.favoriteBorder
-            else IIcon.favorite
-        }
+    val favoriteIcon = remember(favorite) {
+        if (favorite == 0) IIcon.favoriteBorder
+        else IIcon.favorite
     }
 
     val baseIconColor = AppTheme.appColors.accent
@@ -66,7 +64,7 @@ fun LikeCountView(
     }
     val favoriteCount by remember(favorite) {
         derivedStateOf {
-            when{
+            when {
                 favorite == 0 -> TEXT_EMPTY
                 favorite <= 99 -> favorite.toString()
                 else -> "99+"

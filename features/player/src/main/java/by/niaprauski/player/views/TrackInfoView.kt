@@ -27,7 +27,7 @@ fun TrackInfoView(
     trackId: String,
     artist: String,
     title: String,
-    favorite: () -> Int,
+    favorite: Int,
     onAction: (PAction) -> Unit,
 ) {
 

@@ -9,10 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -30,30 +27,21 @@ import by.niaprauski.utils.media.ITrackShort
 fun TrackItem(
     track: ITrackShort,
     onAction: (PAction) -> Unit,
-    currentTrackId: () -> String
+    isSelected: Boolean,
 ) {
 
     val textColor = AppTheme.appColors.text
     val contentColor = remember(textColor) { textColor }
-    val isSelected = remember(track.id) {
-        derivedStateOf { currentTrackId() == track.id }
-    }.value
-
-    val onRemoveTrackClick by rememberUpdatedState(onAction)
-    val onPlayTrackClick by rememberUpdatedState(onAction)
-    val currentModel by rememberUpdatedState(track)
-
-    val handleRemoveClick = remember { { onRemoveTrackClick(PAction.RemoveTrackFromPlayList(currentModel.id))} }
-    val handlePlayClick = remember { { onPlayTrackClick(PAction.PlayTrackFromPlayList(currentModel.id)) } }
-
-
 
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .pulseAlphaBackgroundWithBottomDivider(isSelected, textColor)
+            .pulseAlphaBackgroundWithBottomDivider(
+                isSelected = isSelected,
+                color = textColor
+            )
             .wrapContentHeight()
-            .clickable { handlePlayClick() }
+            .clickable { onAction(PAction.PlayTrackFromPlayList(track.id)) }
             .padding(horizontal = AppTheme.padding.default, vertical = AppTheme.padding.default),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
@@ -70,7 +58,7 @@ fun TrackItem(
         PlayerLiteButton(
             modifier = Modifier.size(AppTheme.viewSize.small),
             imageVector = IIcon.cancel,
-            onClick = handleRemoveClick,
+            onClick = { onAction(PAction.RemoveTrackFromPlayList(track.id)) },
             description = stringResource(R.string.feature_player_delete_from_playlist),
         )
     }

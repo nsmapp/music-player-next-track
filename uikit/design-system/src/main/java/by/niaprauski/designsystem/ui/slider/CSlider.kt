@@ -20,14 +20,14 @@ import by.niaprauski.designsystem.theme.AppTheme
 @Composable
 fun CSlider(
     modifier: Modifier = Modifier,
-    trackProgress: Float,
+    progress: Float,
     valueRange: ClosedFloatingPointRange<Float>,
     steps: Int,
     onValueChange: (Float) -> Unit,
     onValueChangeFinished: (() -> Unit)? = null,
 ) {
     Slider(
-        value = trackProgress,
+        value = progress,
         onValueChange = { newPosition -> onValueChange(newPosition) },
         onValueChangeFinished = { onValueChangeFinished?.invoke() },
         modifier = modifier,

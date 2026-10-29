@@ -8,7 +8,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 fun Modifier.onSwipe(
     onUp: () -> Unit = {},
     onDown: () -> Unit = {}
-): Modifier = pointerInput(Unit) {
+): Modifier = pointerInput(onUp,onDown) {
     var swipe = 0f
     val triggerDistance = 300f
 

@@ -9,23 +9,20 @@ import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.media3.common.util.UnstableApi
 import by.niaprauski.designsystem.theme.AppTheme
 import by.niaprauski.playerservice.models.WaveformData
 import by.niaprauski.playerservice.utils.SoundProcessor
-import kotlinx.coroutines.flow.StateFlow
 
 @OptIn(UnstableApi::class)
 @Composable
 fun WaveBarView(
     modifier: Modifier = Modifier,
-    waveformFlow: StateFlow<WaveformData>,
+    waveform: () -> WaveformData,
     isPlaying: Boolean,
 ) {
     if (!isPlaying) return
 
-    val waveformState = waveformFlow.collectAsStateWithLifecycle()
     val barColor = AppTheme.appColors.text_ligth
 
     Spacer(
@@ -45,7 +42,7 @@ fun WaveBarView(
             onDrawBehind {
                 if (barWidth <= 0f) return@onDrawBehind
 
-                val wave = waveformState.value.values
+                val wave = waveform().values
                 val actualCount = wave.size.coerceAtMost(count)
 
                 for (i in 0 until actualCount) {

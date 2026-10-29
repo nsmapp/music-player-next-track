@@ -63,7 +63,7 @@ fun ContentView(
 
     val keyboardController = LocalSoftwareKeyboardController.current
 
-    val hasValidTrack by remember(currentTrackId()) {
+    val hasValidTrack by remember {
         derivedStateOf { currentTrackId() != UNKNOWN_TRACK_ID }
     }
 

@@ -23,7 +23,6 @@ import by.niaprauski.player.models.PAction
 import by.niaprauski.playerservice.models.ExoPlayerState
 import by.niaprauski.playerservice.models.TrackProgress
 import by.niaprauski.playerservice.models.WaveformData
-import kotlinx.coroutines.flow.StateFlow
 
 @OptIn(UnstableApi::class)
 @Composable
@@ -31,7 +30,7 @@ fun PlayersScreenContent(
     exoPlayerState: ExoPlayerState,
     isVisuallyEnabled: Boolean,
     trackProgress: () -> TrackProgress,
-    waveformFlow: StateFlow<WaveformData>,
+    waveform: () -> WaveformData,
     isSyncing: Boolean,
     onAction: (PAction) -> Unit,
     hasMediaPermission: Boolean,
@@ -71,7 +70,7 @@ fun PlayersScreenContent(
                 trackId = exoPlayerState.id,
                 artist = exoPlayerState.artist,
                 title = exoPlayerState.title,
-                favorite = { exoPlayerState.favorite },
+                favorite = exoPlayerState.favorite,
                 onAction = onAction,
             )
 
@@ -101,7 +100,7 @@ fun PlayersScreenContent(
                     .padding(horizontal = AppTheme.padding.default)
                     .fillMaxWidth()
                     .height(AppTheme.padding.large),
-                waveformFlow = waveformFlow,
+                waveform = waveform,
                 isPlaying = exoPlayerState.isPlaying
             )
         }

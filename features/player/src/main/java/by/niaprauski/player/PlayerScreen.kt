@@ -34,7 +34,6 @@ import by.niaprauski.player.views.PlayersScreenContent
 import by.niaprauski.player.views.TrackItem
 import by.niaprauski.player.views.dialogs.FirstLaunchDialog
 import by.niaprauski.player.views.dialogs.NeedMediaPermissionDialog
-import by.niaprauski.playerservice.models.TrackProgress
 import by.niaprauski.translations.R
 import by.niaprauski.utils.media.MediaHandler
 import by.niaprauski.utils.messages.showToast
@@ -55,7 +54,8 @@ fun PlayerScreen(
     val resources = LocalResources.current
     val state: PlayerState by viewModel.state.collectAsStateWithLifecycle()
     val playerService by viewModel.playerService.collectAsStateWithLifecycle()
-    val trackProgress: TrackProgress by viewModel.trackProgress.collectAsStateWithLifecycle()
+    val trackProgress = viewModel.trackProgress.collectAsStateWithLifecycle()
+    val waveform = viewModel.waveform.collectAsStateWithLifecycle()
 
     val hasMediaPermission by MediaPermissions.rememberMediaPermissions()
 
@@ -129,8 +129,8 @@ fun PlayerScreen(
     PlayersScreenContent(
         exoPlayerState = state.exoPlayerState,
         isVisuallyEnabled = state.isVisuallyEnabled,
-        trackProgress = { trackProgress },
-        waveformFlow = viewModel.waveform,
+        trackProgress = { trackProgress.value },
+        waveform = { waveform.value },
         isSyncing = state.isSyncing,
         onAction = { viewModel.onAction(it) },
         hasMediaPermission = hasMediaPermission,
@@ -163,11 +163,12 @@ fun PlayerScreen(
                 items(
                     count = state.playList.size,
                     key = { index -> state.playList[index].id },
+                    contentType = { "track" },
                 ) {
                     TrackItem(
                         track = state.playList[it],
                         onAction = { action -> viewModel.onAction(action) },
-                        currentTrackId = { state.exoPlayerState.id }
+                        isSelected = state.exoPlayerState.id == state.playList[it].id,
 
                     )
                 }
