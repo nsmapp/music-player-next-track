@@ -60,6 +60,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.system.exitProcess
 
 @UnstableApi
 @AndroidEntryPoint
@@ -128,6 +129,16 @@ class PlayerService : MediaSessionService() {
 
         observeAppSettings()
         startMetadataAnalysis()
+    }
+
+    override fun onTaskRemoved(rootIntent: Intent?) {
+        super.onTaskRemoved(rootIntent)
+        player?.clearMediaItems()
+        mediaSession?.release()
+        mediaSession = null
+        stopForeground(STOP_FOREGROUND_REMOVE)
+        stopSelf()
+        exitProcess(0)
     }
 
     private fun startMetadataAnalysis() {
