@@ -20,7 +20,7 @@ dependencies {
 
     implementation(libs.androidx.datastore)
     implementation(libs.protobuf.core)
-    implementation(libs.protobuf.javalite)
+    api(libs.protobuf.javalite)
 
     implementation(libs.paging3.runtime)
     implementation(libs.paging3.compose)

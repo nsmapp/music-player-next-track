@@ -48,6 +48,7 @@ class AppModulePlugin : Plugin<Project> {
                 buildTypes {
                     release {
                         isMinifyEnabled = true
+                        isShrinkResources = true
                         proguardFiles(
                             getDefaultProguardFile("proguard-android-optimize.txt"),
                             "proguard-rules.pro"
@@ -55,7 +56,8 @@ class AppModulePlugin : Plugin<Project> {
                     }
 
                     debug {
-                        isMinifyEnabled = false
+                        isMinifyEnabled = true
+                        isShrinkResources = true
                         applicationIdSuffix = ".debug"
                         resValue("string", "app_name", "Next track debug")
                     }

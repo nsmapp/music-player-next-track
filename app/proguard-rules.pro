@@ -19,3 +19,12 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+-dontwarn by.niaprauski.data.datastore.DataStoreBaseKt
+-dontwarn by.niaprauski.data.datastore.mapper.SettingsMapper
+-dontwarn by.niaprauski.data.repoimpl.SettingsRepoImpl
+-dontwarn by.niaprauski.designsystem.theme.AppTheme
+-dontwarn by.niaprauski.designsystem.theme.AppThemeKt
+-dontwarn by.niaprauski.designsystem.theme.colors.AppColors
+-dontwarn by.niaprauski.navigation.RootKt
+-dontwarn by.niaprauski.utils.media.MediaHandler
