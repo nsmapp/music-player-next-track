@@ -39,8 +39,8 @@ class AppModulePlugin : Plugin<Project> {
 
                 defaultConfig {
                     applicationId = "by.niaprauski.nt"
-                    versionCode = 1
-                    versionName = "1.0"
+                    versionCode = 3
+                    versionName = "0.93"
                     minSdk = getLibs().versions.minSDK.get().toInt()
                     targetSdk = getLibs().versions.compileSDk.get().toInt()
                 }
@@ -53,6 +53,9 @@ class AppModulePlugin : Plugin<Project> {
                             getDefaultProguardFile("proguard-android-optimize.txt"),
                             "proguard-rules.pro"
                         )
+                        ndk {
+                            debugSymbolLevel = "FULL"
+                        }
                     }
 
                     debug {

@@ -68,6 +68,7 @@ fun AppTheme(
             foreground_light = backgroundColor.lighten(0.2f),
             background = backgroundColor.darken(0.2f),
             background_hard = backgroundColor.darken(0.4f),
+            background_hard_065 = backgroundColor.darken(0.4f).copy(0.65f),
             text = accentColor,
             text_ligth = accentColor.copy(alpha = 0.35f),
         )
