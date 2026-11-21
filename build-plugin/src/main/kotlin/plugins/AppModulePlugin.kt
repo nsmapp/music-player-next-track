@@ -39,8 +39,8 @@ class AppModulePlugin : Plugin<Project> {
 
                 defaultConfig {
                     applicationId = "by.niaprauski.nt"
-                    versionCode = 3
-                    versionName = "0.93"
+                    versionCode = 4
+                    versionName = "0.94"
                     minSdk = getLibs().versions.minSDK.get().toInt()
                     targetSdk = getLibs().versions.compileSDk.get().toInt()
                 }
