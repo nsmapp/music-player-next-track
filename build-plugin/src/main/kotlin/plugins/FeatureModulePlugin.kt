@@ -31,6 +31,10 @@ class FeatureModulePlugin: Plugin<Project> {
                 implementation(getLibs().kotlinx.coroutines.android)
                 implementation(getLibs().immutable.collections.list)
 
+                implementation(getLibs().work.runtime.ktx)
+                implementation(getLibs().hilt.work.runtime)
+                ksp(getLibs().hilt.work.compiler)
+
             }
         }
 

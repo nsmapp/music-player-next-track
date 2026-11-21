@@ -24,7 +24,6 @@ import androidx.media3.exoplayer.util.EventLogger
 import androidx.media3.session.MediaSession
 import androidx.media3.session.MediaSessionService
 import by.niaprauski.domain.usecases.settings.GetSettingsFlowUseCase
-import by.niaprauski.domain.usecases.tag.AnalyzeTrackMetadataUseCase
 import by.niaprauski.playerservice.models.ExoPlayerState
 import by.niaprauski.playerservice.models.PlayerServiceAction
 import by.niaprauski.playerservice.models.TrackProgress
@@ -68,9 +67,6 @@ class PlayerService : MediaSessionService() {
 
     @Inject
     lateinit var getSettingsFlowUseCase: Lazy<GetSettingsFlowUseCase>
-
-    @Inject
-    lateinit var analyzeTrackMetadataUseCase: Lazy<AnalyzeTrackMetadataUseCase>
 
     private val serviceScope = CoroutineScope(Dispatchers.Main + SupervisorJob())
 
@@ -128,7 +124,6 @@ class PlayerService : MediaSessionService() {
         }
 
         observeAppSettings()
-        startMetadataAnalysis()
     }
 
     override fun onTaskRemoved(rootIntent: Intent?) {
@@ -139,23 +134,6 @@ class PlayerService : MediaSessionService() {
         stopForeground(STOP_FOREGROUND_REMOVE)
         stopSelf()
         exitProcess(0)
-    }
-
-    private fun startMetadataAnalysis() {
-        serviceScope.launch(Dispatchers.IO) {
-            delay(5000)
-            runAnalysisCycle()
-        }
-    }
-
-    private suspend fun runAnalysisCycle() {
-        val result = analyzeTrackMetadataUseCase.get().invoke(limit = 63)
-        val processedCount = result.getOrDefault(0)
-
-        if (processedCount > 0) {
-            delay(1500)
-            runAnalysisCycle()
-        }
     }
 
     private fun observeAppSettings() {

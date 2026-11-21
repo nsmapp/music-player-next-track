@@ -24,6 +24,7 @@ import by.niaprauski.player.models.PAction
 import by.niaprauski.player.models.PlayerEvent
 import by.niaprauski.player.models.PlayerState
 import by.niaprauski.player.models.SyncTrackStatus
+import by.niaprauski.player.worker.AnalyzeMetadataWorker
 import by.niaprauski.playerservice.PlayerConnectionController
 import by.niaprauski.playerservice.PlayerService
 import by.niaprauski.playerservice.models.ExoPlayerState
@@ -202,6 +203,7 @@ class PlayerViewModel @AssistedInject constructor(
             filterAndSaveTracksUseCase.invoke(syncTracks)
                 .onSuccess {
                     handleSyncedTracks()
+                    AnalyzeMetadataWorker.enqueue(application)
                     _event.send(PlayerEvent.MediaItemSynced)
                 }
                 .onFailure {
