@@ -7,6 +7,10 @@ plugins {
 
 android {
     namespace = "by.niaprauski.playerservice"
+
+    buildFeatures {
+        buildConfig = true
+    }
 }
 
 dependencies {

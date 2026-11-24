@@ -109,7 +109,8 @@ class PlayerService : MediaSessionService() {
                 addListener(playerListener)
                 repeatMode = Player.REPEAT_MODE_ALL
                 setAudioAttributes(audioAttributes, true)
-                addAnalyticsListener(EventLogger()) //TODO remove/to debug
+
+                if (BuildConfig.DEBUG) addAnalyticsListener(EventLogger())
             }
 
         player?.let { exoPlayer ->

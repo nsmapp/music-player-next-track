@@ -5,8 +5,8 @@ import androidx.media3.common.audio.AudioProcessor.EMPTY_BUFFER
 import androidx.media3.common.util.UnstableApi
 import by.niaprauski.playerservice.models.WaveformData
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import java.nio.ByteBuffer
@@ -29,20 +29,18 @@ class SoundProcessor(
         private const val MIN_REMAINING_SLICE_BYTES: Int = 128
     }
 
-    private val waveChannel = Channel<FloatArray>(capacity = 60)
+    private val waveChannel = Channel<FloatArray>(capacity = 60, onBufferOverflow = BufferOverflow.DROP_OLDEST)
 
     private var isVisuallyEnabled = false
 
     private var inputAudioFormat = AudioProcessor.AudioFormat.NOT_SET
     private var outputBuffer: ByteBuffer = EMPTY_BUFFER
-    private var buffer: ByteBuffer = EMPTY_BUFFER
     private var inputEnded = false
 
     init {
         scope.launch {
             for (array in waveChannel) {
                 waveForm.value = WaveformData(array)
-                delay(FRAME_INTERVAL_MS)
             }
         }
     }
@@ -66,14 +64,7 @@ class SoundProcessor(
             processAudioBuffer(inputBuffer)
         }
 
-        if (buffer.capacity() < count) buffer = ByteBuffer
-            .allocateDirect(count)
-            .order(ByteOrder.nativeOrder())
-        else buffer.clear()
-
-        buffer.put(inputBuffer)
-        buffer.flip()
-        outputBuffer = buffer
+        outputBuffer = inputBuffer
     }
 
     private fun processAudioBuffer(buffer: ByteBuffer) {
@@ -143,7 +134,6 @@ class SoundProcessor(
 
     override fun reset() {
         flush()
-        buffer = EMPTY_BUFFER
         inputAudioFormat = AudioProcessor.AudioFormat.NOT_SET
     }
 
