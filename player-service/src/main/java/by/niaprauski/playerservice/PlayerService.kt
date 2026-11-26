@@ -164,6 +164,7 @@ class PlayerService : MediaSessionService() {
         mediaSession
 
     override fun onBind(intent: Intent?): IBinder {
+        super.onBind(intent)
         return playerBinder
     }
 

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Vyrai</string>
-    <string name="app_version"> v0.9</string>
+    <string name="app_version"> v0.95</string>
     <!--    //TODO move version to properties-->
 
     <string name="root_descriptin_library">Library</string>

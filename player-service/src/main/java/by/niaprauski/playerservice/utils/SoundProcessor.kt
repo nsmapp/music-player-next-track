@@ -7,7 +7,9 @@ import by.niaprauski.playerservice.models.WaveformData
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
@@ -26,10 +28,9 @@ class SoundProcessor(
         private const val FRAME_INTERVAL_SECONDS: Double = 0.060
         private const val FRAME_INTERVAL_MS: Long = 60L
         private const val MIN_CHUNK_BYTES: Int = 512
-        private const val MIN_REMAINING_SLICE_BYTES: Int = 128
     }
 
-    private val waveChannel = Channel<FloatArray>(capacity = 60, onBufferOverflow = BufferOverflow.DROP_OLDEST)
+    private val waveChannel = Channel<FloatArray>(capacity = 13, onBufferOverflow = BufferOverflow.DROP_OLDEST)
 
     private var isVisuallyEnabled = false
 
@@ -40,7 +41,8 @@ class SoundProcessor(
     init {
         scope.launch {
             for (array in waveChannel) {
-                waveForm.value = WaveformData(array)
+                waveForm.update { WaveformData(array) }
+                delay(FRAME_INTERVAL_MS)
             }
         }
     }
@@ -76,19 +78,14 @@ class SoundProcessor(
         val channelCount = if (inputAudioFormat.channelCount > 0) inputAudioFormat.channelCount else DEFAULT_CHANNEL_COUNT
         val bytesPerFrame = (sampleRate * channelCount * BYTES_PER_16BIT_SAMPLE * FRAME_INTERVAL_SECONDS).toInt().coerceAtLeast(MIN_CHUNK_BYTES)
 
-        var offset = 0
-        while (offset < totalBytes) {
-            val chunkSize = (totalBytes - offset).coerceAtMost(bytesPerFrame)
-            if (chunkSize < MIN_REMAINING_SLICE_BYTES) break
+        val chunkSize = totalBytes.coerceAtMost(bytesPerFrame)
+        val startOffset = totalBytes - chunkSize
 
-            dup.position(offset)
-            dup.limit(offset + chunkSize)
+        dup.position(startOffset)
+        dup.limit(totalBytes)
 
-            val frame = extractWaveformFromSlice(dup)
-            waveChannel.trySend(frame)
-
-            offset += chunkSize
-        }
+        val frame = extractWaveformFromSlice(dup)
+        waveChannel.trySend(frame)
     }
 
     private fun extractWaveformFromSlice(slice: ByteBuffer): FloatArray {

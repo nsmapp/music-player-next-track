@@ -4,6 +4,10 @@ plugins {
 
 android {
     namespace = "by.sm.niaprauski.about"
+
+    buildFeatures {
+        buildConfig = true
+    }
 }
 
 dependencies {
